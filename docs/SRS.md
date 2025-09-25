@@ -82,13 +82,6 @@
 <a name="user_interface"/>
 
 ## 2.2 Интерфейс пользователя
-Окно входа на сайт.  
-
-![Окно входа на сайт](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/Mockups/startAskWindow.png)  
-
-Окно ввода пароля для входа как одмин.
-
-![Окно ввода пароля для входа как одмин](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/Mockups/passwordForAdmin.png)  
 
 Главное окно сайта(пользователь).  
 
