@@ -15,7 +15,7 @@
 
 ![Регистрация в приложении](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/Diagrams/Images/SequenceDiagramSignUp.png)
   
-### 3. Добавление фильма<a name="3"></a>
+### 3. Покупка билетов<a name="3"></a>
 
 ![Покупка билетов](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/Diagrams/Images/SequenceBuyTicket.png)
 
