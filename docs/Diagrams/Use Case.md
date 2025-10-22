@@ -1,6 +1,6 @@
 # Диаграмма вариантов использования
 
-![Диаграмма вариантов использования](https://github.com/Sifuentes00/buy-ticket-application/tree/main/docs/Diagrams/Images/UseCase.png) 
+![Диаграмма вариантов использования](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/Diagrams/Images/UseCase.png) 
   
 # Глоссарий
 

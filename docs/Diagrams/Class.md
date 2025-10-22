@@ -1,6 +1,6 @@
 # Диаграмма классов  
 
-![Диаграмма классов](https://github.com/Sifuentes00/buy-ticket-application/tree/main/docs/Diagrams/Images/ClassDiagram.png) 
+![Диаграмма классов](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/Diagrams/Images/ClassDiagram.png)
 
 # Глоссарий
 
