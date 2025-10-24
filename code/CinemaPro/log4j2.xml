@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN" monitorInterval="30"> <Properties>
+    <Property name="LOG_DIR">logs</Property>
+    <Property name="LOG_FILE_NAME">cinema.log</Property>
+</Properties>
+
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %highlight{${LOG_LEVEL_PATTERN:-%5p}}{FATAL=red blink, ERROR=red, WARN=yellow bold, INFO=green, DEBUG=blue, TRACE=blue} %style{%c{1.}:%L}{cyan} - %msg%n%throwable"/>
+        </Console>
+
+        <RollingFile name="File"
+                     fileName="${LOG_DIR}/${LOG_FILE_NAME}"
+                     filePattern="${LOG_DIR}/archived/cinema-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1.}:%L - %msg%n%throwable"/>
+
+            <Policies>
+                <OnStartupTriggeringPolicy />
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/> <SizeBasedTriggeringPolicy size="10 MB" /> </Policies>
+
+            <DefaultRolloverStrategy max="7"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info"> <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Root>
+
+    </Loggers>
+</Configuration>

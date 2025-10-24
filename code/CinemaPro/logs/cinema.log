@@ -1,0 +1,290 @@
+2025-09-21 19:51:51.584 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-09-21 19:51:51.604 [main] INFO  com.matvey.cinema.CinemaApplication - Starting CinemaApplication using Java 23.0.2 with PID 6019 (/Users/matveyvasiluk/Documents/java/JavaSpring/Cinema/target/classes started by matveyvasiluk in /Users/matveyvasiluk/Documents/java/JavaSpring/Cinema)
+2025-09-21 19:51:51.604 [main] DEBUG com.matvey.cinema.CinemaApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-09-21 19:51:51.604 [main] INFO  com.matvey.cinema.CinemaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-21 19:51:52.057 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-21 19:51:52.085 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 23 ms. Found 7 JPA repository interfaces.
+2025-09-21 19:51:52.405 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-21 19:51:52.411 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-21 19:51:52.411 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-21 19:51:52.412 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-09-21 19:51:52.433 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-21 19:51:52.433 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 809 ms
+2025-09-21 19:51:52.563 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-21 19:51:52.590 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-09-21 19:51:52.603 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-21 19:51:52.741 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-21 19:51:52.753 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-21 19:51:53.032 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@65698020
+2025-09-21 19:51:53.033 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-21 19:51:53.076 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-21 19:51:53.077 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-21 19:51:53.084 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-21 19:51:53.527 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-21 19:51:53.613 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-21 19:51:53.789 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-21 19:51:54.121 [main] INFO  c.matvey.cinema.config.JacksonConfig - Configuring ObjectMapper with custom settings and modules.
+2025-09-21 19:51:54.122 [main] INFO  c.matvey.cinema.config.JacksonConfig - Hibernate5JakartaModule registered with ObjectMapper.
+2025-09-21 19:51:54.200 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-21 19:51:54.575 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-09-21 19:51:54.610 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-21 19:51:54.615 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-21 19:51:54.623 [main] INFO  com.matvey.cinema.CinemaApplication - Started CinemaApplication in 3.145 seconds (process running for 3.698)
+2025-09-21 19:51:54.916 [RMI TCP Connection(4)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-21 19:51:54.917 [RMI TCP Connection(4)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-21 19:51:54.919 [RMI TCP Connection(4)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 2 ms
+2025-09-21 19:53:20.723 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 19:53:20.724 [http-nio-8080-exec-1] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 19:53:20.763 [http-nio-8080-exec-1] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 19:53:20.853 [http-nio-8080-exec-1] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews added to cache.
+2025-09-21 19:53:20.856 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@2100769, com.matvey.cinema.model.entities.Movie@650ece02, com.matvey.cinema.model.entities.Movie@be78e5f, com.matvey.cinema.model.entities.Movie@6172e158, com.matvey.cinema.model.entities.Movie@63e79a08, com.matvey.cinema.model.entities.Movie@1d6e829a],[]>
+2025-09-21 20:32:55.425 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getMovieById() with arguments = [3]
+2025-09-21 20:32:55.425 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with arguments = [3]
+2025-09-21 20:32:55.426 [http-nio-8080-exec-3] DEBUG c.m.c.controllers.MovieController - Запрос на получение фильма с ID: 3
+2025-09-21 20:32:55.426 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with arguments = [3]
+2025-09-21 20:32:55.426 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.ReviewController - Запрос на получение отзывов для фильма с ID: 3
+2025-09-21 20:32:55.426 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.ShowtimeController - Запрос на получение сеансов для фильма с ID: 3
+2025-09-21 20:32:55.462 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.ReviewServiceImpl - Finding reviews by movie ID: 3
+2025-09-21 20:32:55.462 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.MovieServiceImpl - Finding movie by ID: 3
+2025-09-21 20:32:55.462 [http-nio-8080-exec-4] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Поиск сеансов для фильма с ID: 3
+2025-09-21 20:32:55.462 [http-nio-8080-exec-4] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Кэш промах для сеансов фильма с ID 3. Получение из репозитория.
+2025-09-21 20:32:55.499 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.MovieServiceImpl - Movie with ID: 3 added to cache.
+2025-09-21 20:32:55.501 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getMovieById() with result = <200 OK OK,com.matvey.cinema.model.entities.Movie@61f3a807,[]>
+2025-09-21 20:32:55.502 [http-nio-8080-exec-4] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Movie for showtime 37
+2025-09-21 20:32:55.503 [http-nio-8080-exec-4] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Theater for showtime 37
+2025-09-21 20:32:55.506 [http-nio-8080-exec-4] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Сеансы для фильма с ID: 3 добавлены в кэш.
+2025-09-21 20:32:55.506 [http-nio-8080-exec-4] INFO  c.m.c.controllers.ShowtimeController - Найдено 1 сеансов для фильма с ID 3
+2025-09-21 20:32:55.506 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Showtime@2abb5887],[]>
+2025-09-21 20:32:55.506 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.ReviewServiceImpl - Reviews for movie ID 3 added to cache.
+2025-09-21 20:32:55.507 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Review@7f453421, com.matvey.cinema.model.entities.Review@420bf0c7, com.matvey.cinema.model.entities.Review@2e16ff2f],[]>
+2025-09-21 20:33:17.756 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 20:33:17.756 [http-nio-8080-exec-6] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 20:33:17.758 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 20:33:17.767 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews added to cache.
+2025-09-21 20:33:17.768 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@3165b697, com.matvey.cinema.model.entities.Movie@3c2b3ea8, com.matvey.cinema.model.entities.Movie@160dd054, com.matvey.cinema.model.entities.Movie@3576c6c4, com.matvey.cinema.model.entities.Movie@12ddc78c, com.matvey.cinema.model.entities.Movie@77be9e4],[]>
+2025-09-21 21:00:59.741 [http-nio-8080-exec-10] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:00:59.742 [http-nio-8080-exec-10] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:00:59.747 [http-nio-8080-exec-10] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:00:59.782 [http-nio-8080-exec-10] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews added to cache.
+2025-09-21 21:00:59.785 [http-nio-8080-exec-10] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:00.811 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:00.811 [http-nio-8080-exec-1] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:00.812 [http-nio-8080-exec-1] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:00.813 [http-nio-8080-exec-1] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:00.813 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:00.970 [http-nio-8080-exec-2] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:00.970 [http-nio-8080-exec-2] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:00.972 [http-nio-8080-exec-2] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:00.972 [http-nio-8080-exec-2] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:00.972 [http-nio-8080-exec-2] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:01.125 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:01.125 [http-nio-8080-exec-3] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:01.127 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:01.127 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:01.127 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:01.286 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:01.286 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:01.288 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:01.288 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:01.289 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:01.452 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:01.453 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:01.454 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:01.454 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:01.455 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:01.659 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:01.659 [http-nio-8080-exec-6] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:01.660 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:01.660 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:01.662 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:02.119 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:01:02.120 [http-nio-8080-exec-7] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:01:02.121 [http-nio-8080-exec-7] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:01:02.121 [http-nio-8080-exec-7] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:01:02.122 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:01:09.587 [http-nio-8080-exec-8] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getMovieById() with arguments = [3]
+2025-09-21 21:01:09.587 [http-nio-8080-exec-8] DEBUG c.m.c.controllers.MovieController - Запрос на получение фильма с ID: 3
+2025-09-21 21:01:09.588 [http-nio-8080-exec-9] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with arguments = [3]
+2025-09-21 21:01:09.588 [http-nio-8080-exec-9] DEBUG c.m.c.controllers.ShowtimeController - Запрос на получение сеансов для фильма с ID: 3
+2025-09-21 21:01:09.588 [http-nio-8080-exec-10] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with arguments = [3]
+2025-09-21 21:01:09.588 [http-nio-8080-exec-10] DEBUG c.m.c.controllers.ReviewController - Запрос на получение отзывов для фильма с ID: 3
+2025-09-21 21:01:09.589 [http-nio-8080-exec-8] INFO  c.m.c.service.impl.MovieServiceImpl - Finding movie by ID: 3
+2025-09-21 21:01:09.590 [http-nio-8080-exec-9] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Поиск сеансов для фильма с ID: 3
+2025-09-21 21:01:09.590 [http-nio-8080-exec-10] INFO  c.m.c.service.impl.ReviewServiceImpl - Finding reviews by movie ID: 3
+2025-09-21 21:01:09.590 [http-nio-8080-exec-9] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Кэш промах для сеансов фильма с ID 3. Получение из репозитория.
+2025-09-21 21:01:09.591 [http-nio-8080-exec-8] INFO  c.m.c.service.impl.MovieServiceImpl - Movie with ID: 3 added to cache.
+2025-09-21 21:01:09.593 [http-nio-8080-exec-8] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getMovieById() with result = <200 OK OK,com.matvey.cinema.model.entities.Movie@40654a27,[]>
+2025-09-21 21:01:09.597 [http-nio-8080-exec-9] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Movie for showtime 37
+2025-09-21 21:01:09.599 [http-nio-8080-exec-9] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Theater for showtime 37
+2025-09-21 21:01:09.600 [http-nio-8080-exec-9] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Сеансы для фильма с ID: 3 добавлены в кэш.
+2025-09-21 21:01:09.601 [http-nio-8080-exec-9] INFO  c.m.c.controllers.ShowtimeController - Найдено 1 сеансов для фильма с ID 3
+2025-09-21 21:01:09.601 [http-nio-8080-exec-9] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Showtime@63c1e890],[]>
+2025-09-21 21:01:09.602 [http-nio-8080-exec-10] INFO  c.m.c.service.impl.ReviewServiceImpl - Reviews for movie ID 3 added to cache.
+2025-09-21 21:01:09.602 [http-nio-8080-exec-10] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Review@90130f, com.matvey.cinema.model.entities.Review@5c6c7436, com.matvey.cinema.model.entities.Review@4c5b9139],[]>
+2025-09-21 21:03:38.215 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:03:38.216 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:03:38.217 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:03:38.218 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews found in cache.
+2025-09-21 21:03:38.219 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@5da6cc8d, com.matvey.cinema.model.entities.Movie@838f144, com.matvey.cinema.model.entities.Movie@1f2ed3e5, com.matvey.cinema.model.entities.Movie@7801b781, com.matvey.cinema.model.entities.Movie@6ff73e68, com.matvey.cinema.model.entities.Movie@188746c1],[]>
+2025-09-21 21:17:44.530 [http-nio-8080-exec-8] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with arguments = [3]
+2025-09-21 21:17:44.530 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getMovieById() with arguments = [3]
+2025-09-21 21:17:44.530 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with arguments = [3]
+2025-09-21 21:17:44.532 [http-nio-8080-exec-6] DEBUG c.m.c.controllers.MovieController - Запрос на получение фильма с ID: 3
+2025-09-21 21:17:44.532 [http-nio-8080-exec-7] DEBUG c.m.c.controllers.ShowtimeController - Запрос на получение сеансов для фильма с ID: 3
+2025-09-21 21:17:44.532 [http-nio-8080-exec-8] DEBUG c.m.c.controllers.ReviewController - Запрос на получение отзывов для фильма с ID: 3
+2025-09-21 21:17:44.572 [http-nio-8080-exec-8] INFO  c.m.c.service.impl.ReviewServiceImpl - Finding reviews by movie ID: 3
+2025-09-21 21:17:44.572 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.MovieServiceImpl - Finding movie by ID: 3
+2025-09-21 21:17:44.574 [http-nio-8080-exec-7] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Поиск сеансов для фильма с ID: 3
+2025-09-21 21:17:44.574 [http-nio-8080-exec-7] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Кэш промах для сеансов фильма с ID 3. Получение из репозитория.
+2025-09-21 21:17:44.595 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.MovieServiceImpl - Movie with ID: 3 added to cache.
+2025-09-21 21:17:44.595 [http-nio-8080-exec-7] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Movie for showtime 37
+2025-09-21 21:17:44.597 [http-nio-8080-exec-7] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Theater for showtime 37
+2025-09-21 21:17:44.598 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getMovieById() with result = <200 OK OK,com.matvey.cinema.model.entities.Movie@262a2563,[]>
+2025-09-21 21:17:44.599 [http-nio-8080-exec-7] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Сеансы для фильма с ID: 3 добавлены в кэш.
+2025-09-21 21:17:44.599 [http-nio-8080-exec-7] INFO  c.m.c.controllers.ShowtimeController - Найдено 1 сеансов для фильма с ID 3
+2025-09-21 21:17:44.600 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Showtime@ed88a57],[]>
+2025-09-21 21:17:44.601 [http-nio-8080-exec-8] INFO  c.m.c.service.impl.ReviewServiceImpl - Reviews for movie ID 3 added to cache.
+2025-09-21 21:17:44.604 [http-nio-8080-exec-8] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Review@6fa680ac, com.matvey.cinema.model.entities.Review@28fbde16, com.matvey.cinema.model.entities.Review@2f543d20],[]>
+2025-09-21 21:19:03.523 [http-nio-8080-exec-3] DEBUG c.m.c.controllers.AuthController - Попытка входа для пользователя: Alexey
+2025-09-21 21:19:03.524 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.UserServiceImpl - Поиск пользователя по нику: Alexey и паролю (без хеширования).
+2025-09-21 21:19:03.579 [http-nio-8080-exec-3] INFO  c.m.c.controllers.AuthController - Пользователь Alexey успешно вошел (без хеширования пароля).
+2025-09-21 21:19:13.869 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:19:13.869 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:19:13.874 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:19:13.885 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews added to cache.
+2025-09-21 21:19:13.888 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@1ced76db, com.matvey.cinema.model.entities.Movie@4411f1e9, com.matvey.cinema.model.entities.Movie@32f2e415, com.matvey.cinema.model.entities.Movie@7cbe59b1, com.matvey.cinema.model.entities.Movie@6d7b42f3, com.matvey.cinema.model.entities.Movie@8eb1e40],[]>
+2025-09-21 21:19:15.557 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getMovieById() with arguments = [3]
+2025-09-21 21:19:15.557 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.MovieController - Запрос на получение фильма с ID: 3
+2025-09-21 21:19:15.558 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with arguments = [3]
+2025-09-21 21:19:15.558 [http-nio-8080-exec-7] DEBUG c.m.c.controllers.ShowtimeController - Запрос на получение сеансов для фильма с ID: 3
+2025-09-21 21:19:15.560 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with arguments = [3]
+2025-09-21 21:19:15.561 [http-nio-8080-exec-6] DEBUG c.m.c.controllers.ReviewController - Запрос на получение отзывов для фильма с ID: 3
+2025-09-21 21:19:15.563 [http-nio-8080-exec-7] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Поиск сеансов для фильма с ID: 3
+2025-09-21 21:19:15.564 [http-nio-8080-exec-7] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Сеансы для фильма с ID 3 найдены в кэше.
+2025-09-21 21:19:15.564 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.MovieServiceImpl - Finding movie by ID: 3
+2025-09-21 21:19:15.564 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.MovieServiceImpl - Movie ID: 3 found in cache.
+2025-09-21 21:19:15.564 [http-nio-8080-exec-7] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Movie for showtime 37
+2025-09-21 21:19:15.564 [http-nio-8080-exec-7] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Theater for showtime 37
+2025-09-21 21:19:15.564 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.ReviewServiceImpl - Finding reviews by movie ID: 3
+2025-09-21 21:19:15.564 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.ReviewServiceImpl - Reviews for movie ID 3 found in cache.
+2025-09-21 21:19:15.564 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getMovieById() with result = <200 OK OK,com.matvey.cinema.model.entities.Movie@262a2563,[]>
+2025-09-21 21:19:15.564 [http-nio-8080-exec-7] INFO  c.m.c.controllers.ShowtimeController - Найдено 1 сеансов для фильма с ID 3
+2025-09-21 21:19:15.565 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Showtime@ed88a57],[]>
+2025-09-21 21:19:15.565 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Review@6fa680ac, com.matvey.cinema.model.entities.Review@28fbde16, com.matvey.cinema.model.entities.Review@2f543d20],[]>
+2025-09-21 21:40:06.893 [http-nio-8080-exec-2] DEBUG c.m.c.controllers.AuthController - Попытка входа для пользователя: Alexey
+2025-09-21 21:40:06.894 [http-nio-8080-exec-2] INFO  c.m.c.service.impl.UserServiceImpl - Поиск пользователя по нику: Alexey и паролю (без хеширования).
+2025-09-21 21:40:06.960 [http-nio-8080-exec-2] INFO  c.m.c.controllers.AuthController - Пользователь Alexey успешно вошел (без хеширования пароля).
+2025-09-21 21:40:52.277 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with arguments = [51]
+2025-09-21 21:40:52.277 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with arguments = [51]
+2025-09-21 21:40:52.278 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.TicketController - Request to get tickets for user ID: 51
+2025-09-21 21:40:52.278 [http-nio-8080-exec-6] DEBUG c.m.c.controllers.TicketController - Request to get tickets for user ID: 51
+2025-09-21 21:40:52.289 [http-nio-8080-exec-6] INFO  c.m.c.service.impl.TicketServiceImpl - Finding tickets for user ID: 51
+2025-09-21 21:40:52.289 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.TicketServiceImpl - Finding tickets for user ID: 51
+2025-09-21 21:40:52.348 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.TicketController - Found 8 tickets for user ID 51
+2025-09-21 21:40:52.348 [http-nio-8080-exec-6] DEBUG c.m.c.controllers.TicketController - Found 8 tickets for user ID 51
+2025-09-21 21:40:52.349 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@7e72cc11, com.matvey.cinema.model.entities.Ticket@6bde5c0b, com.matvey.cinema.model.entities.Ticket@5a003073, com.matvey.cinema.model.entities.Ticket@4baaa1a1, com.matvey.cinema.model.entities.Ticket@19b79e58, com.matvey.cinema.model.entities.Ticket@15c1076a, com.matvey.cinema.model.entities.Ticket@44334f14, com.matvey.cinema.model.entities.Ticket@1ff2a5cb],[]>
+2025-09-21 21:40:52.349 [http-nio-8080-exec-6] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@12d85aa7, com.matvey.cinema.model.entities.Ticket@3a2b9269, com.matvey.cinema.model.entities.Ticket@439e1a86, com.matvey.cinema.model.entities.Ticket@13442cdc, com.matvey.cinema.model.entities.Ticket@554f53fb, com.matvey.cinema.model.entities.Ticket@76743039, com.matvey.cinema.model.entities.Ticket@2907ad02, com.matvey.cinema.model.entities.Ticket@1e74ed9a],[]>
+2025-09-21 21:40:55.571 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 21:40:55.571 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 21:40:55.572 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 21:40:55.579 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews added to cache.
+2025-09-21 21:40:55.580 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@7184d28a, com.matvey.cinema.model.entities.Movie@78eb386a, com.matvey.cinema.model.entities.Movie@687b3b08, com.matvey.cinema.model.entities.Movie@40f0b0ad, com.matvey.cinema.model.entities.Movie@2dc7d742, com.matvey.cinema.model.entities.Movie@63922e00],[]>
+2025-09-21 21:40:56.494 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getMovieById() with arguments = [3]
+2025-09-21 21:40:56.495 [http-nio-8080-exec-7] DEBUG c.m.c.controllers.MovieController - Запрос на получение фильма с ID: 3
+2025-09-21 21:40:56.496 [http-nio-8080-exec-9] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with arguments = [3]
+2025-09-21 21:40:56.496 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with arguments = [3]
+2025-09-21 21:40:56.497 [http-nio-8080-exec-9] DEBUG c.m.c.controllers.ReviewController - Запрос на получение отзывов для фильма с ID: 3
+2025-09-21 21:40:56.497 [http-nio-8080-exec-1] DEBUG c.m.c.controllers.ShowtimeController - Запрос на получение сеансов для фильма с ID: 3
+2025-09-21 21:40:56.497 [http-nio-8080-exec-7] INFO  c.m.c.service.impl.MovieServiceImpl - Finding movie by ID: 3
+2025-09-21 21:40:56.498 [http-nio-8080-exec-9] INFO  c.m.c.service.impl.ReviewServiceImpl - Finding reviews by movie ID: 3
+2025-09-21 21:40:56.498 [http-nio-8080-exec-1] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Поиск сеансов для фильма с ID: 3
+2025-09-21 21:40:56.498 [http-nio-8080-exec-1] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Кэш промах для сеансов фильма с ID 3. Получение из репозитория.
+2025-09-21 21:40:56.499 [http-nio-8080-exec-7] INFO  c.m.c.service.impl.MovieServiceImpl - Movie with ID: 3 added to cache.
+2025-09-21 21:40:56.500 [http-nio-8080-exec-7] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getMovieById() with result = <200 OK OK,com.matvey.cinema.model.entities.Movie@51df00c4,[]>
+2025-09-21 21:40:56.502 [http-nio-8080-exec-1] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Movie for showtime 37
+2025-09-21 21:40:56.503 [http-nio-8080-exec-1] DEBUG c.m.c.s.impl.ShowtimeServiceImpl - Accessing Theater for showtime 37
+2025-09-21 21:40:56.506 [http-nio-8080-exec-1] INFO  c.m.c.s.impl.ShowtimeServiceImpl - Сеансы для фильма с ID: 3 добавлены в кэш.
+2025-09-21 21:40:56.506 [http-nio-8080-exec-9] INFO  c.m.c.service.impl.ReviewServiceImpl - Reviews for movie ID 3 added to cache.
+2025-09-21 21:40:56.507 [http-nio-8080-exec-1] INFO  c.m.c.controllers.ShowtimeController - Найдено 1 сеансов для фильма с ID 3
+2025-09-21 21:40:56.507 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ShowtimeController.getShowtimesByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Showtime@2a64816c],[]>
+2025-09-21 21:40:56.507 [http-nio-8080-exec-9] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.ReviewController.getReviewsByMovieId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Review@1a40ec29, com.matvey.cinema.model.entities.Review@15056bcf, com.matvey.cinema.model.entities.Review@43fa44a6],[]>
+2025-09-21 21:53:49.037 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByShowtimeId() with arguments = [37]
+2025-09-21 21:53:49.039 [http-nio-8080-exec-3] DEBUG c.m.c.controllers.TicketController - Request to get tickets for showtime with ID: 37
+2025-09-21 21:53:49.055 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.TicketServiceImpl - Finding tickets for showtime ID: 37
+2025-09-21 21:53:49.111 [http-nio-8080-exec-3] INFO  c.m.c.service.impl.TicketServiceImpl - Tickets for showtime ID 37 added to cache.
+2025-09-21 21:53:49.113 [http-nio-8080-exec-3] DEBUG c.m.c.controllers.TicketController - Found 8 tickets for showtime with ID 37
+2025-09-21 21:53:49.114 [http-nio-8080-exec-3] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByShowtimeId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@4325b566, com.matvey.cinema.model.entities.Ticket@6fe5230b, com.matvey.cinema.model.entities.Ticket@649b97b0, com.matvey.cinema.model.entities.Ticket@3276695, com.matvey.cinema.model.entities.Ticket@1e7be34e, com.matvey.cinema.model.entities.Ticket@2d021397, com.matvey.cinema.model.entities.Ticket@1fa182c9, com.matvey.cinema.model.entities.Ticket@731b4799],[]>
+2025-09-21 22:07:14.116 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with arguments = [51]
+2025-09-21 22:07:14.116 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with arguments = [51]
+2025-09-21 22:07:14.117 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.TicketController - Request to get tickets for user ID: 51
+2025-09-21 22:07:14.117 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.TicketController - Request to get tickets for user ID: 51
+2025-09-21 22:07:14.155 [http-nio-8080-exec-5] INFO  c.m.c.service.impl.TicketServiceImpl - Finding tickets for user ID: 51
+2025-09-21 22:07:14.155 [http-nio-8080-exec-4] INFO  c.m.c.service.impl.TicketServiceImpl - Finding tickets for user ID: 51
+2025-09-21 22:07:14.196 [http-nio-8080-exec-4] DEBUG c.m.c.controllers.TicketController - Found 8 tickets for user ID 51
+2025-09-21 22:07:14.196 [http-nio-8080-exec-5] DEBUG c.m.c.controllers.TicketController - Found 8 tickets for user ID 51
+2025-09-21 22:07:14.197 [http-nio-8080-exec-5] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@28905511, com.matvey.cinema.model.entities.Ticket@786f02fa, com.matvey.cinema.model.entities.Ticket@4b24832d, com.matvey.cinema.model.entities.Ticket@572e716f, com.matvey.cinema.model.entities.Ticket@d630777, com.matvey.cinema.model.entities.Ticket@40c503bb, com.matvey.cinema.model.entities.Ticket@18dd5f44, com.matvey.cinema.model.entities.Ticket@73358b92],[]>
+2025-09-21 22:07:14.197 [http-nio-8080-exec-4] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.TicketController.getTicketsByUserId() with result = <200 OK OK,[com.matvey.cinema.model.entities.Ticket@38c8fd1f, com.matvey.cinema.model.entities.Ticket@6879d9e, com.matvey.cinema.model.entities.Ticket@49bf188d, com.matvey.cinema.model.entities.Ticket@45976fba, com.matvey.cinema.model.entities.Ticket@7c92bfaa, com.matvey.cinema.model.entities.Ticket@39c6023f, com.matvey.cinema.model.entities.Ticket@6b648bd5, com.matvey.cinema.model.entities.Ticket@6f27bb52],[]>
+2025-09-21 22:13:49.143 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Entering: com.matvey.cinema.controllers.MovieController.getAllMovies() with arguments = []
+2025-09-21 22:13:49.144 [http-nio-8080-exec-1] DEBUG c.m.c.controllers.MovieController - Запрос на получение всех фильмов с отзывами
+2025-09-21 22:13:49.183 [http-nio-8080-exec-1] INFO  c.m.c.service.impl.MovieServiceImpl - Finding all movies with reviews
+2025-09-21 22:13:49.223 [http-nio-8080-exec-1] INFO  c.m.c.service.impl.MovieServiceImpl - All movies with reviews added to cache.
+2025-09-21 22:13:49.226 [http-nio-8080-exec-1] DEBUG c.matvey.cinema.aspect.LoggingAspect - Exiting: com.matvey.cinema.controllers.MovieController.getAllMovies() with result = <200 OK OK,[com.matvey.cinema.model.entities.Movie@4bc8efb0, com.matvey.cinema.model.entities.Movie@248fbcc2, com.matvey.cinema.model.entities.Movie@5bd4818f, com.matvey.cinema.model.entities.Movie@26a3874e, com.matvey.cinema.model.entities.Movie@e1f298d, com.matvey.cinema.model.entities.Movie@442e323e],[]>
+2025-09-21 22:14:33.424 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-21 22:14:33.432 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-21 22:14:33.440 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-21 22:14:33.447 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-21 22:14:33.467 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-21 22:20:32.137 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-09-21 22:20:32.155 [main] INFO  com.matvey.cinema.CinemaApplication - Starting CinemaApplication using Java 23.0.2 with PID 7420 (/Users/matveyvasiluk/Documents/java/JavaSpring/Cinema/target/classes started by matveyvasiluk in /Users/matveyvasiluk/Documents/java/JavaSpring/Cinema)
+2025-09-21 22:20:32.156 [main] DEBUG com.matvey.cinema.CinemaApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-09-21 22:20:32.156 [main] INFO  com.matvey.cinema.CinemaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-21 22:20:32.548 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-21 22:20:32.572 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 20 ms. Found 7 JPA repository interfaces.
+2025-09-21 22:20:32.848 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-09-21 22:20:32.853 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2025-09-21 22:20:32.853 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-21 22:20:32.853 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.34]
+2025-09-21 22:20:32.870 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-21 22:20:32.870 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 697 ms
+2025-09-21 22:20:32.988 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-21 22:20:33.013 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.5.Final
+2025-09-21 22:20:33.027 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-21 22:20:33.139 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-21 22:20:33.152 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-21 22:20:33.355 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@36857d32
+2025-09-21 22:20:33.356 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-21 22:20:33.390 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-21 22:20:33.391 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-21 22:20:33.397 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-21 22:20:33.795 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-21 22:20:33.868 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-21 22:20:34.038 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-21 22:20:34.326 [main] INFO  c.matvey.cinema.config.JacksonConfig - Configuring ObjectMapper with custom settings and modules.
+2025-09-21 22:20:34.326 [main] INFO  c.matvey.cinema.config.JacksonConfig - Hibernate5JakartaModule registered with ObjectMapper.
+2025-09-21 22:20:34.387 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-21 22:20:34.717 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-09-21 22:20:34.750 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2025-09-21 22:20:34.755 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path '/'
+2025-09-21 22:20:34.763 [main] INFO  com.matvey.cinema.CinemaApplication - Started CinemaApplication in 2.731 seconds (process running for 3.276)
+2025-09-21 22:20:35.208 [RMI TCP Connection(2)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-21 22:20:35.208 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-21 22:20:35.209 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-09-21 22:20:58.235 [SpringApplicationShutdownHook] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-21 22:20:58.241 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-21 22:20:58.246 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-21 22:20:58.250 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-21 22:20:58.256 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
