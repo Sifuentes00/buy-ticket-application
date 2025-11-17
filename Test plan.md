@@ -152,8 +152,7 @@
 
 ## Представление результатов
 
-Результаты представлены  в документе ["Результаты тестирования"](https://github.com/Sifuentes00/buy-ticket-application/Test%20results.md).
-
+Результаты представлены  в документе ["Результаты тестирования"](https://github.com/Sifuentes00/buy-ticket-application/blob/main/Test%20results.md).
 <a name="conclusion"/>
 
 ## Выводы
