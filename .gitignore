@@ -1,27 +1,30 @@
-HELP.md
-code/CinemaPro/target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.DS_Store
+# Logs
+/code/CinemaPro/logs/
+/code/CinemaPro/*.log
+/code/CinemaPro/npm-debug.log*
+/code/CinemaPro/yarn-debug.log*
+/code/CinemaPro/yarn-error.log*
+/code/CinemaPro/pnpm-debug.log*
+/code/CinemaPro/lerna-debug.log*
 
-### STS ###
-*.apt_generated
-*.classpath
-*.factorypath
-*.project
-*.settings
-*.springBeans
-*.sts4-cache
+/code/CinemaPro/my-spring-frontend/node_modules
+/code/CinemaPro/dist
+/code/CinemaPro/dist-ssr
+/code/CinemaPro/*.local
+/code/CinemaPro/.env
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-*.log
-*.env
-code/CinemaPro/logs/
+# Editor directories and files
+/code/CinemaPro/.vscode/*
+!/code/CinemaPro/.vscode/extensions.json
+/code/CinemaPro/.idea/
+/code/CinemaPro/.DS_Store
+/code/CinemaPro/*.suo
+/code/CinemaPro/*.ntvs*
+/code/CinemaPro/*.njsproj
+/code/CinemaPro/*.sln
+/code/CinemaPro/*.sw?
 
-### VS Code ###
-*.vscode/
+# Maven
+/code/CinemaPro/target/
+!/code/CinemaPro/.mvn/wrapper/maven-wrapper.jar
+/code/CinemaPro/.mvn/
