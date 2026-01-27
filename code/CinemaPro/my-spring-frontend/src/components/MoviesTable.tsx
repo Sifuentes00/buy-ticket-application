@@ -184,6 +184,7 @@ function MoviesTable() {
 
     const validateDialogForm = (): DialogFormErrors => {
         const errors: DialogFormErrors = {};
+        const currentYear = new Date().getFullYear();
         const { title, director, releaseYear, genre } = dialogFormData;
 
         if (!title.trim()) {
@@ -200,8 +201,8 @@ function MoviesTable() {
             const parsedYear = parseInt(releaseYear, 10);
             if (isNaN(parsedYear)) {
                 errors.releaseYear = 'Введите корректный год (число)';
-            } else if (parsedYear < 1895 || parsedYear > 2025) {
-                errors.releaseYear = `Год должен быть от 1895 до 2025`;
+            } else if (parsedYear < 1895 || parsedYear > currentYear) {
+                errors.releaseYear = `Год должен быть от 1895 до ${currentYear}`;
             }
         }
 
