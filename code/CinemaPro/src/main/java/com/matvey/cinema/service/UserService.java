@@ -16,4 +16,5 @@ public interface UserService {
     Optional<User> findByUsername(String username);
 
     Optional<User> authenticate(String username, String rawPassword);
+
 }

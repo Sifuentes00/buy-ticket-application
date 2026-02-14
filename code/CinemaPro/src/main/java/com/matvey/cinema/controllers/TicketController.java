@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Ticket Controller", description = "API for managing tickets")
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/tickets")
 public class TicketController {
     private final TicketService ticketService;

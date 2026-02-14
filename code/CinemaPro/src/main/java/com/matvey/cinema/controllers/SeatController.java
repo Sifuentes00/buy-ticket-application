@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/seats")
+@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Seat Controller", description = "API для управления местами")
 public class SeatController {
     private final SeatRepository seatRepository;

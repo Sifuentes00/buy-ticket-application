@@ -3,6 +3,7 @@
 package com.matvey.cinema.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore; // Импорт для игнорирования полей при сериализации
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType; // Импорт для каскадных операций
 import jakarta.persistence.Entity; // Импорт для объявления класса сущностью JPA
 import jakarta.persistence.GeneratedValue; // Импорт для стратегии генерации первичного ключа
@@ -32,7 +33,7 @@ public class User {
     private String email; // Поле для хранения email пользователя
 
     @NotBlank(message = "Пароль не должен быть пустым") // Валидация: поле не должно быть пустым
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password; // Поле для хранения пароля пользователя (в идеале - зашифрованного)
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

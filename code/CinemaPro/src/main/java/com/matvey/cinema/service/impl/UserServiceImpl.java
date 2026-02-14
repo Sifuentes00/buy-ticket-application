@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Override
     public Optional<User> findById(Long id) {
         String cacheKey = CacheKeys.USER_PREFIX + id;
@@ -77,19 +76,26 @@ public class UserServiceImpl implements UserService {
     @Override
     public User save(User user) {
 
-        logger.debug("User object received in UserServiceImpl.save: {}", user);
+        logger.debug("User object received in UserServiceImpl.save");
 
         if (user != null && user.getPassword() != null) {
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
-            user.setPassword(encodedPassword);
+
+            String password = user.getPassword();
+
+            // Проверяем, не захеширован ли уже пароль
+            if (!password.startsWith("$2a$") &&
+                    !password.startsWith("$2b$") &&
+                    !password.startsWith("$2y$")) {
+
+                String encodedPassword = passwordEncoder.encode(password);
+                user.setPassword(encodedPassword);
+            }
         }
 
         User savedUser = userRepository.save(user);
 
         cache.evict(CacheKeys.USERS_ALL);
         cache.evict(CacheKeys.USER_PREFIX + savedUser.getId());
-
-        logger.info("Пользователь с ID: {} успешно сохранен и кэш очищен.", savedUser.getId());
 
         return savedUser;
     }
@@ -119,9 +125,12 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findByUsername(username);
 
         if (userOptional.isPresent()) {
+
             User user = userOptional.get();
 
-            if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+            if (user.getPassword() != null &&
+                    passwordEncoder.matches(rawPassword, user.getPassword())) {
+
                 return Optional.of(user);
             }
         }
