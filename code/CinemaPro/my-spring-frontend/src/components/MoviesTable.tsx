@@ -69,7 +69,7 @@ function MoviesTable() {
 
     const [dialogFormErrors, setDialogFormErrors] = useState<DialogFormErrors>({});
 
-    const API_URL = 'http://localhost:8080/api/movies';
+    const API_URL = '/api/movies';
 
 
     const calculateAverageRating = (reviews?: Movie['reviews']): number | null => {

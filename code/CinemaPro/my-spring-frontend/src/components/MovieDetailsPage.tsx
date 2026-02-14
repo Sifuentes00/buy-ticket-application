@@ -102,13 +102,13 @@ const SEATS_PER_ROW = 10;
 const SEAT_PRICE = 300;
 
 // --- URL'ы бэкенда ---
-const MOVIES_API_URL = 'http://localhost:8080/api/movies';
-const SHOWTIMES_API_URL = 'http://localhost:8080/api/showtimes';
-const SHOWTIMES_BY_MOVIE_API_URL_BASE = 'http://localhost:8080/api/showtimes/movie';
-const REVIEWS_API_URL = 'http://localhost:8080/api/reviews';
-const REVIEWS_BY_MOVIE_API_URL_BASE = 'http://localhost:8080/api/reviews/movie';
-const TICKETS_BY_SHOWTIME_API_URL_BASE = `http://localhost:8080/api/tickets/showtime`;
-const PURCHASE_TICKET_API_URL = `http://localhost:8080/api/tickets/purchase`;
+const MOVIES_API_URL = '/api/movies';
+const SHOWTIMES_API_URL = '/api/showtimes';
+const SHOWTIMES_BY_MOVIE_API_URL_BASE = '/api/showtimes/movie';
+const REVIEWS_API_URL = '/api/reviews';
+const REVIEWS_BY_MOVIE_API_URL_BASE = '/api/reviews/movie';
+const TICKETS_BY_SHOWTIME_API_URL_BASE = `/api/tickets/showtime`;
+const PURCHASE_TICKET_API_URL = `/api/tickets/purchase`;
 
 
 function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {

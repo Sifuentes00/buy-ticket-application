@@ -52,11 +52,9 @@ interface UserFormData {
     password: string;
 }
 
-// URL for your backend users endpoint (for registration POST /api/users)
-const USERS_API_URL = 'http://localhost:8080/api/users';
+const USERS_API_URL = '/api/users';
 
-// TODO: Define the URL FOR YOUR LOGIN ENDPOINT on the backend (YOU need to implement it)
-const LOGIN_API_URL = 'http://localhost:8080/api/auth/login';
+const LOGIN_API_URL = '/api/auth/login';
 
 
 function App() {
