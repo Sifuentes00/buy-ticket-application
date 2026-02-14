@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Showtime Controller", description = "API для управления сеансами")
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/showtimes")
 public class ShowtimeController {
     private final ShowtimeService showtimeService;

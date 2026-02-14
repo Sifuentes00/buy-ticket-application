@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -19,12 +20,17 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final InMemoryCache cache;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, InMemoryCache cache) {
+    public UserServiceImpl(UserRepository userRepository,
+                           InMemoryCache cache,
+                           PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.cache = cache;
+        this.passwordEncoder = passwordEncoder;
     }
+
 
     @Override
     public Optional<User> findById(Long id) {
@@ -70,18 +76,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User save(User user) {
-        // <-- ДОБАВЛЕНО ЛОГИРОВАНИЕ -->
-        logger.debug("User object received in UserServiceImpl.save: {}", user);
-        if (user != null) {
-            logger.debug("Password field in User object before saving: {}", user.getPassword());
-        }
-        // <-- Конец ДОБАВЛЕННОГО ЛОГИРОВАНИЯ -->
 
-        // Пароль сохраняется как есть (строка)
+        logger.debug("User object received in UserServiceImpl.save: {}", user);
+
+        if (user != null && user.getPassword() != null) {
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+        }
+
         User savedUser = userRepository.save(user);
 
         cache.evict(CacheKeys.USERS_ALL);
         cache.evict(CacheKeys.USER_PREFIX + savedUser.getId());
+
         logger.info("Пользователь с ID: {} успешно сохранен и кэш очищен.", savedUser.getId());
 
         return savedUser;
@@ -107,9 +114,19 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username);
     }
 
-    @Override
-    public Optional<User> findByUsernameAndPassword(String username, String password) {
-        logger.info("Поиск пользователя по нику: {} и паролю (без хеширования).", username);
-        return userRepository.findByUsernameAndPassword(username, password);
+    public Optional<User> authenticate(String username, String rawPassword) {
+
+        Optional<User> userOptional = userRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+
+            if (passwordEncoder.matches(rawPassword, user.getPassword())) {
+                return Optional.of(user);
+            }
+        }
+
+        return Optional.empty();
     }
+
 }

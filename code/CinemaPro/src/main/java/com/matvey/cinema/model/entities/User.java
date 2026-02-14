@@ -32,6 +32,7 @@ public class User {
     private String email; // Поле для хранения email пользователя
 
     @NotBlank(message = "Пароль не должен быть пустым") // Валидация: поле не должно быть пустым
+    @JsonIgnore
     private String password; // Поле для хранения пароля пользователя (в идеале - зашифрованного)
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

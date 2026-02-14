@@ -19,21 +19,19 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "Auth Controller", description = "API для аутентификации пользователя")
 public class AuthController {
 
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserService userService;
-    public AuthController(UserService userService /*, PasswordEncoder passwordEncoder*/) {
+    public AuthController(UserService userService) {
         this.userService = userService;
-        // this.passwordEncoder = passwordEncoder; // <-- УДАЛЯЕМ ИНИЦИАЛИЗАЦИЮ
     }
 
     @PostMapping("/login")
     @Operation(summary = "Авторизация пользователя",
-            description = "Выполняет вход пользователя по нику и паролю (ВНИМАНИЕ: без хеширования!)") // <-- Предупреждение
+            description = "Выполняет вход пользователя по нику и паролю (с проверкой bcrypt)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Вход выполнен успешно",
                     content = @Content(mediaType = "application/json",
@@ -42,31 +40,24 @@ public class AuthController {
                     description = "Неверные учетные данные", content = @Content)
     })
     public ResponseEntity<User> login(@Valid @RequestBody LoginRequestDto loginRequest) {
+
         logger.debug("Попытка входа для пользователя: {}", loginRequest.getUsername());
 
-        // <-- ДОБАВЛЕНО: Использование нового метода поиска по нику И паролю -->
-        // ВНИМАНИЕ: Сравнение паролей происходит напрямую в методе репозитория/сервиса!
-        Optional<User> userOptional = userService.findByUsernameAndPassword(
+        Optional<User> userOptional = userService.authenticate(
                 loginRequest.getUsername(),
-                loginRequest.getPassword() // <-- Передаем введенный пароль
+                loginRequest.getPassword()
         );
-        // <-- Конец нового поиска -->
-
 
         if (userOptional.isEmpty()) {
-            logger.warn("Попытка входа с неверными учетными данными для пользователя: {}", loginRequest.getUsername());
-            // Пользователь не найден ИЛИ пароль неверный
-            // Возвращаем 401 Unauthorized, чтобы не раскрывать, существует ли пользователь с таким ником.
+            logger.warn("Неверные учетные данные для пользователя: {}",
+                    loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        // 3. Аутентификация успешна
         User user = userOptional.get();
-        logger.info("Пользователь {} успешно вошел (без хеширования пароля).", user.getUsername());
-        return ResponseEntity.ok(user); // Возвращаем данные пользователя (без пароля из-за @JsonIgnore)
+        logger.info("Пользователь {} успешно вошел.", user.getUsername());
+
+        return ResponseEntity.ok(user);
     }
 
-    // TODO: Возможно, добавить эндпоинт для регистрации здесь (POST /api/auth/register)
-    // и переместить логику создания пользователя из UserController сюда.
-    // При регистрации здесь нужно будет просто сохранить User с пришедшим plain-text паролем.
 }

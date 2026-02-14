@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:5173")
 @Tag(name = "User Controller", description = "API для управления пользователями")
 public class UserController {
     private final UserService userService;
@@ -103,12 +102,7 @@ public class UserController {
                     description = "Неверные входные данные", content = @Content)
     })
     public ResponseEntity<User> createUser(@Valid @RequestBody User user) {
-        // <-- ДОБАВЛЕНО ЛОГИРОВАНИЕ -->
         logger.debug("Received User object in UserController.createUser: {}", user);
-        if (user != null) {
-            logger.debug("Password field in received User object: {}", user.getPassword());
-        }
-        // <-- Конец ДОБАВЛЕННОГО ЛОГИРОВАНИЯ -->
 
         visitCounterService.writeVisit("/api/users");
         User createdUser = userService.save(user);
@@ -175,16 +169,21 @@ public class UserController {
             @ApiResponse(responseCode = "404",
                     description = "Пользователь не найден", content = @Content)
     })
-    public ResponseEntity<User> updateUser(
-            @Parameter(description = "Идентификатор пользователя для обновления",
-                    example = "1") @PathVariable Long id,
-            @Valid @RequestBody User user) {
-        logger.debug("Запрос на обновление пользователя с ID: {}", id);
-        visitCounterService.writeVisit("/api/users/" + id);
-        user.setId(id);
-        // TODO: В реальном приложении здесь не следует позволять менять пароль напрямую
-        // без отдельной процедуры или хеширования, если оно было.
-        User updatedUser = userService.save(user);
+    public ResponseEntity<User> updateUser(@PathVariable Long id,
+                                           @Valid @RequestBody User user) {
+
+        User existingUser = userService.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        existingUser.setUsername(user.getUsername());
+        existingUser.setEmail(user.getEmail());
+
+        if (user.getPassword() != null && !user.getPassword().isBlank()) {
+            existingUser.setPassword(user.getPassword()); // сервис его захеширует
+        }
+
+        User updatedUser = userService.save(existingUser);
+
         return ResponseEntity.ok(updatedUser);
     }
 
