@@ -99,7 +99,7 @@ interface MyTicketsPageProps {
 
 // --- URL API ---
 // Базовый URL для получения билетов пользователя
-const USER_TICKETS_API_URL = 'http://localhost:8080/api/tickets/user';
+const USER_TICKETS_API_URL = '/api/tickets/user';
 // --- КОНЕЦ URL API ---
 
 

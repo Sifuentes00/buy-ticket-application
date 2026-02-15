@@ -15,6 +15,6 @@ public interface UserService {
 
     Optional<User> findByUsername(String username);
 
-    // <-- ДОБАВЛЕНО: Сигнатура метода для поиска по нику И паролю -->
-    Optional<User> findByUsernameAndPassword(String username, String password);
+    Optional<User> authenticate(String username, String rawPassword);
+
 }

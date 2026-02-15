@@ -1,8 +1,30 @@
-code/CinemaPro/target/
-code/CinemaPro/.env
-code/CinemaPro/logs/archived/
-code/CinemaPro/my-spring-frontend/dist/
-code/CinemaPro/my-spring-frontend/node_modules/
+# Logs
+code/CinemaPro/logs/
+code/CinemaPro/*.log
+code/CinemaPro/npm-debug.log*
+code/CinemaPro/yarn-debug.log*
+code/CinemaPro/yarn-error.log*
+code/CinemaPro/pnpm-debug.log*
+code/CinemaPro/lerna-debug.log*
 
-*.class
-target/
+code/CinemaPro/my-spring-frontend/node_modules
+code/CinemaPro/dist
+code/CinemaPro/dist-ssr
+code/CinemaPro/*.local
+code/CinemaPro/.env
+
+# Editor directories and files
+code/CinemaPro/.vscode/*
+!/code/CinemaPro/.vscode/extensions.json
+code/CinemaPro/.idea/
+code/CinemaPro/.DS_Store
+code/CinemaPro/*.suo
+code/CinemaPro/*.ntvs*
+code/CinemaPro/*.njsproj
+code/CinemaPro/*.sln
+code/CinemaPro/*.sw?
+
+# Maven
+code/CinemaPro/target/
+!/code/CinemaPro/.mvn/wrapper/maven-wrapper.jar
+code/CinemaPro/.mvn/
