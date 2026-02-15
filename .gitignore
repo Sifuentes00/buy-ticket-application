@@ -4,3 +4,5 @@ code/CinemaPro/logs/archived/
 code/CinemaPro/my-spring-frontend/dist/
 code/CinemaPro/my-spring-frontend/node_modules/
 
+*.class
+target/
