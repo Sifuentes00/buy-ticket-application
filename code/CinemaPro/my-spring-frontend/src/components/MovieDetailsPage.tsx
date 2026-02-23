@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react'; // УДАЛЕНО: ReactNode
-import { useParams } from 'react-router-dom'; // Импортируем useNavigate
-import axios from 'axios';
+import { useParams } from 'react-router-dom'; // Добавляем useNavigate
+ // Импортируем useNavigate
+import { apiGet, apiPost, apiPut, apiDelete } from '../api';
+
+
 import {
     Container,
     Typography,
@@ -31,6 +34,25 @@ import AddIcon from '@mui/icons-material/Add';
 import StarIcon from '@mui/icons-material/Star';
 import AccessTimeIcon from '@mui/icons-material/AccessTime'; // Иконка для времени
 
+import type { AuthUser } from '../types';
+
+interface Review {
+    id: number;
+    rating: number;
+    content: string;
+    keycloakUserId: string;
+    username: string;
+    email: string;
+}
+
+interface ReviewFormData {
+    id?: string;
+    movieId: string;
+    userId?: string;
+    rating: number;
+    content: string;
+}
+
 interface Movie {
     id: number;
     title: string;
@@ -54,7 +76,6 @@ interface Ticket {
     seatNumber: string;
 }
 
-
 interface MovieFormData {
     id?: number;
     title: string;
@@ -70,31 +91,11 @@ interface ShowtimeFormData {
     type: string;
 }
 
-interface Review {
-    id: number;
-    rating: number;
-    content?: string;
-    user: { id: number; username: string; } | null;
-    movie: { id: number; } | null;
-}
-
-interface ReviewFormData {
-    id?: number;
-    movieId: number;
-    userId?: number;
-    rating: number;
-    content: string;
-}
-
-interface User {
-    id: number;
-    username: string;
-    email: string;
-}
-
 interface MovieDetailsPageProps {
-    currentUser: User | null;
+    currentUser: AuthUser;
 }
+
+
 
 // --- КОНСТАНТЫ ---
 const ROWS = 5;
@@ -102,22 +103,24 @@ const SEATS_PER_ROW = 10;
 const SEAT_PRICE = 300;
 
 // --- URL'ы бэкенда ---
-const MOVIES_API_URL = '/api/movies';
-const SHOWTIMES_API_URL = '/api/showtimes';
-const SHOWTIMES_BY_MOVIE_API_URL_BASE = '/api/showtimes/movie';
-const REVIEWS_API_URL = '/api/reviews';
-const REVIEWS_BY_MOVIE_API_URL_BASE = '/api/reviews/movie';
-const TICKETS_BY_SHOWTIME_API_URL_BASE = `/api/tickets/showtime`;
-const PURCHASE_TICKET_API_URL = `/api/tickets/purchase`;
+const MOVIES_API_URL = '/movies';
+const SHOWTIMES_API_URL = '/showtimes';
+const SHOWTIMES_BY_MOVIE_API_URL_BASE = '/showtimes/movie';
+const REVIEWS_API_URL = '/reviews';
+const REVIEWS_BY_MOVIE_API_URL_BASE = '/reviews/movie';
+const TICKETS_BY_SHOWTIME_API_URL_BASE = '/tickets/showtime';
+const PURCHASE_TICKET_API_URL = '/tickets/purchase';
 
 
 function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
+
     const { id } = useParams<{ id: string }>();
     const movieId = id ? parseInt(id, 10) : null;
 
     const [movie, setMovie] = useState<Movie | null>(null);
     const [showtimes, setShowtimes] = useState<Showtime[]>([]);
     const [reviews, setReviews] = useState<Review[]>([]);
+    const isAdmin = currentUser?.roles?.includes("ADMIN");
 
     const [selectedShowtime, setSelectedShowtime] = useState<Showtime | null>(null);
 
@@ -146,7 +149,11 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
 
 
     const [showtimeFormData, setShowtimeFormData] = useState<ShowtimeFormData>({ movieId: movieId || 0, dateTime: '', type: '' });
-    const [reviewFormData, setReviewFormData] = useState<ReviewFormData>({ movieId: movieId || 0, rating: 0, content: '' });
+    const [reviewFormData, setReviewFormData] = useState<ReviewFormData>({
+        movieId: movieId?.toString() || '',
+        rating: 0,
+        content: ''
+    });
     const [dialogFormData, setDialogFormData] = useState<MovieFormData>({ id: undefined, title: '', director: '', releaseYear: '', genre: '' });
 
 
@@ -184,7 +191,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         setReviewsError(null);
 
         try {
-            const response = await axios.get<Review[]>(url);
+            const response = await apiGet<Review[]>(url);
 
             if (!Array.isArray(response.data)) {
                 if (response.status === 204) {
@@ -196,14 +203,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                 throw new Error("Некорректный формат данных отзывов.");
             }
 
-            const formattedReviews: Review[] = response.data.map(review => ({
-                ...review,
-                user: review.user ? { id: review.user.id, username: review.user.username } : null,
-                movie: review.movie ? { id: review.movie.id } : null,
-            }));
-
-
-            setReviews(formattedReviews);
+            setReviews(response.data);
             setReviewsLoading(false);
             setReviewsError(null);
 
@@ -231,7 +231,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         setShowtimesError(null);
 
         try {
-            const response = await axios.get<Showtime[]>(url);
+            const response = await apiGet<Showtime[]>(url);
 
             if (!Array.isArray(response.data)) {
                 if (response.status === 204) {
@@ -263,7 +263,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         setTicketsError(null);
 
         try {
-            const response = await axios.get<Ticket[]>(url);
+            const response = await apiGet<Ticket[]>(url);
 
             if (response.status === 204) {
                 setShowtimeTickets([]);
@@ -302,22 +302,17 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
             return;
         }
 
-        if (!currentUser || !currentUser.id) {
-            console.error("Current user is not logged in or user ID is missing.", currentUser);
-            alert("Пожалуйста, войдите или зарегистрируйтесь, чтобы купить билеты.");
-            return;
-        }
 
         setIsPurchasing(true);
 
         const purchaseData = {
             showtimeId: selectedShowtime.id,
             seatNumbers: selectedSeats,
-            userId: currentUser.id,
         };
 
+
         try {
-            await axios.post(PURCHASE_TICKET_API_URL, purchaseData);
+            await apiPost(PURCHASE_TICKET_API_URL, purchaseData);
             alert(`Поздравляем! Вы успешно купили ${selectedSeats.length} билет(ов)!`);
 
             if (selectedShowtime.id) {
@@ -360,7 +355,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         setReviews([]);
         setSelectedShowtime(null);
 
-        axios.get<Movie>(`${MOVIES_API_URL}/${movieId}`)
+        apiGet<Movie>(`${MOVIES_API_URL}/${movieId}`)
             .then(response => {
                 setMovie(response.data);
                 setLoading(false);
@@ -404,9 +399,9 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
 
     // Сеансы
     const handleOpenShowtimeModal = (showtime?: Showtime) => {
-        if (!currentUser /* TODO: Проверка роли администратора */) {
-            // alert("У вас нет прав на добавление/редактирование сеансов.");
-            // return;
+        if (!isAdmin) {
+            alert("Только администратор может добавлять или редактировать сеансы.");
+            return;
         }
 
         if (showtime) {
@@ -431,16 +426,12 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         setShowtimeFormData({ movieId: movieId || 0, dateTime: '', type: '' });
     };
 
-    // === ИСПРАВЛЕНО: Обновлена сигнатура для поддержки SelectChangeEvent ===
     const handleShowtimeInputChange = (
         event: SelectChangeEvent<string> | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, // Объединяем типы событий от Select и TextField
     ) => {
         const { name, value } = event.target;
-        // Обработка как из TextField, так и из Select (SelectChangeEvent тоже имеет target.name и target.value)
-        // Type assertion to tell TypeScript that name is a key of ShowtimeFormData
         setShowtimeFormData(prevState => ({ ...prevState, [name as keyof ShowtimeFormData]: value as any }));
     };
-    // ======================================================================
 
     // Хендлер для выбора сеанса
     const handleSelectShowtime = (showtime: Showtime) => {
@@ -476,8 +467,8 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         }
 
         const apiCall = isEditing
-            ? axios.put<Showtime>(`${SHOWTIMES_API_URL}/${showtimeFormData.id}`, showtimeDataToSend)
-            : axios.post<Showtime>(SHOWTIMES_API_URL, showtimeDataToSend);
+            ? apiPut<Showtime>(`${SHOWTIMES_API_URL}/${showtimeFormData.id}`, showtimeDataToSend)
+            : apiPost<Showtime>(SHOWTIMES_API_URL, showtimeDataToSend);
 
         try {
             await apiCall;
@@ -497,7 +488,8 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
     const handleDeleteShowtime = async (id: number) => {
         if (window.confirm(`Выверены, что хотите удалить сеанс?`)) {
             try {
-                await axios.delete(`${SHOWTIMES_API_URL}/${id}`);
+                await apiDelete(`${SHOWTIMES_API_URL}/${id}`);
+
                 setShowtimes(showtimes.filter(st => st.id !== id));
                 console.log(`Сеанс с ID ${id} успешно удален.`);
                 if (selectedShowtime && selectedShowtime.id === id) {
@@ -516,8 +508,12 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
     };
 
 
-    // Отзывы
     const handleOpenReviewModal = (review?: Review) => {
+        if (review && review.keycloakUserId !== currentUser?.id) {
+            alert("Вы можете редактировать только свои отзывы.");
+            return;
+        }
+
         if (!currentUser && review === undefined) {
             alert("Войдите, чтобы оставить отзыв.");
             return;
@@ -530,11 +526,10 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
 
         if (review) {
             setReviewFormData({
-                id: review.id,
+                id: review.id.toString(),
                 rating: review.rating,
                 content: review.content || '',
-                userId: review.user?.id ?? currentUser?.id ?? 0,
-                movieId: review.movie?.id ?? movie.id ?? 0,
+                movieId: movie?.id?.toString() ?? movie?.id?.toString() ?? '',
             });
         } else {
             if (!currentUser?.id || !movie?.id) {
@@ -543,8 +538,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                 return;
             }
             setReviewFormData({
-                movieId: movie.id,
-                userId: currentUser.id,
+                movieId: movie.id.toString(),
                 rating: 0,
                 content: '',
             });
@@ -554,7 +548,11 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
 
     const handleCloseReviewModal = () => {
         setIsReviewModalOpen(false);
-        setReviewFormData({ movieId: movieId || 0, rating: 0, content: '' });
+        setReviewFormData({
+            movieId: movieId?.toString() || '',
+            rating: 0,
+            content: ''
+        });
     };
 
     const handleReviewInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -573,7 +571,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
     };
 
     const handleSaveReview = async () => {
-        if (!currentUser || !currentUser.id || typeof currentUser.id !== 'number') {
+        if (!currentUser) {
             console.error("Current user is not logged in or user ID is invalid:", currentUser);
             alert("Пользователь не авторизован.");
             return;
@@ -584,12 +582,6 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
             return;
         }
 
-        if (!reviewFormData.movieId || !reviewFormData.userId) {
-            console.error("reviewFormData missing movieId or userId:", reviewFormData);
-            alert("Не удалось связать отзыв с фильмом или пользователем.");
-            return;
-        }
-
 
         setIsSubmittingReview(true);
 
@@ -597,16 +589,16 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
 
         const reviewDataToSend = {
             id: reviewFormData.id,
-            movieId: reviewFormData.movieId,
-            userId: reviewFormData.userId,
+            movieId: Number(reviewFormData.movieId),
             rating: reviewFormData.rating,
             content: reviewFormData.content.trim(),
+            keycloakUserId: currentUser.id,
         };
 
 
         const apiCall = isEditing
-            ? axios.put<Review>(`${REVIEWS_API_URL}/${reviewFormData.id}`, reviewDataToSend)
-            : axios.post<Review>(REVIEWS_API_URL, reviewDataToSend);
+            ? apiPut<Review>(`${REVIEWS_API_URL}/${reviewFormData.id}`, reviewDataToSend)
+            : apiPost<Review>(REVIEWS_API_URL, reviewDataToSend);
 
         try {
             const response = await apiCall;
@@ -616,8 +608,9 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                 id: savedReview.id,
                 rating: savedReview.rating,
                 content: savedReview.content,
-                user: currentUser ? { id: currentUser.id, username: currentUser.username } : { id: reviewDataToSend.userId, username: 'Аноним' },
-                movie: movie ? { id: movie.id } : null,
+                keycloakUserId: currentUser.id,
+                username: currentUser.username,
+                email: currentUser.email,
             };
 
             if (isEditing) {
@@ -642,41 +635,47 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
     };
 
     const handleDeleteReview = async (id: number) => {
-        if (window.confirm(`Выверены, что хотите удалить отзыв?`)) {
+
+        const reviewToDelete = reviews.find(r => Number(r.id) === Number(id));
+
+        if (!reviewToDelete) {
+            alert("Отзыв не найден.");
+            return;
+        }
+
+        if (reviewToDelete.keycloakUserId !== currentUser?.id) {
+            alert("Вы можете удалять только свои отзывы.");
+            return;
+        }
+
+        if (window.confirm(`Вы уверены, что хотите удалить отзыв?`)) {
             try {
-                await axios.delete(`${REVIEWS_API_URL}/${id}`);
-                setReviews(reviews.filter(rev => rev.id !== id));
+                await apiDelete(`${REVIEWS_API_URL}/${id}`);
+                setReviews(reviews.filter(rev => Number(rev.id) !== Number(id)));
+
                 if (movieId !== null) {
                     fetchReviewsForMovie(movieId);
                 }
 
             } catch (err: any) {
                 console.error(`Ошибка при удалении отзыва с ID ${id}:`, err.response?.data || err.message);
-                const errorMessage = err.response?.data?.message || err.response?.data || err.message || err;
-                alert('Не удалось удалить отзыв. ' + (typeof errorMessage === 'string' ? errorMessage : JSON.stringify(errorMessage)));
+                alert('Не удалось удалить отзыв.');
             }
         }
     };
-
-
-    // <-- ЛОГИКА УПРАВЛЕНИЯ МОДАЛКОЙ И СОХРАНЕНИЕМ ФИЛЬМА -->
-    // TODO: Добавить логику открытия модалки редактирования фильма
-    // const handleOpenMovieModal = (movie?: Movie) => { ... }
-
 
     const handleCloseMovieModal = () => {
         setIsMovieModalOpen(false);
         setDialogFormData({ id: undefined, title: '', director: '', releaseYear: '', genre: '' });
     };
 
-    // Хендлер для изменения полей формы фильма
+
     const handleDialogInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
         setDialogFormData(prevState => ({ ...prevState, [name]: value }));
     };
 
 
-    // Функция сохранения фильма
     const handleSaveDialogForm = async () => {
         if (
             !dialogFormData.title.trim()
@@ -705,8 +704,8 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
         const isEditing = dialogFormData.id !== undefined;
 
         const apiCall = isEditing
-            ? axios.put<Movie>(`${MOVIES_API_URL}/${dialogFormData.id}`, movieDataToSend)
-            : axios.post<Movie>(MOVIES_API_URL, movieDataToSend);
+            ? apiPut<Movie>(`${MOVIES_API_URL}/${dialogFormData.id}`, movieDataToSend)
+            : apiPost<Movie>(MOVIES_API_URL, movieDataToSend);
 
         setIsSubmittingMovie(true);
 
@@ -832,9 +831,12 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
             <Box sx={{ mb: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                     <Typography variant="h5" sx={{ color: '#ffffff' }}>Расписание сеансов</Typography>
+                    {isAdmin && (
                         <Button variant="contained" startIcon={<AddIcon />} onClick={() => handleOpenShowtimeModal()}>
                             Добавить сеанс
                         </Button>
+                    )}
+
                 </Box>
                 {showtimesLoading && <Box sx={{ display: 'flex', justifyContent: 'center' }}><CircularProgress size={24} /></Box>}
                 {showtimesError && <Typography color="error">{showtimesError}</Typography>}
@@ -877,7 +879,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                                         Тип: {showtime.type} {/* Тип */}
                                     </Typography>
                                 )}
-                                {/* Кнопки редактирования/удаления сеансов */}
+                                {isAdmin && (
                                     <Box sx={{ mt: 1 }}>
                                         <IconButton size="small" aria-label="edit showtime" onClick={(e) => { e.stopPropagation(); handleOpenShowtimeModal(showtime); }}>
                                             <EditIcon fontSize="small" color="primary" />
@@ -886,6 +888,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                                             <DeleteIcon fontSize="small" color="error" />
                                         </IconButton>
                                     </Box>
+                                )}
                             </Paper>
                         ))}
                     </Box>
@@ -942,7 +945,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                                 key={review.id}
                                 secondaryAction={
                                     <Box>
-                                        {currentUser && review.user?.id === currentUser.id && (
+                                        {currentUser && review.keycloakUserId === currentUser.id && (
                                             <>
                                                 <IconButton  aria-label="edit review" onClick={() => handleOpenReviewModal(review)}>
                                                     <EditIcon fontSize="small" color="primary" />
@@ -960,7 +963,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                                     primary={<>
                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                             <Typography variant="subtitle1" component="span" sx={{ mr: 1, fontWeight: 'bold', color: '#ffffff' }}>
-                                                {review.user?.username || 'Аноним'}
+                                                {review.username || 'Аноним'}
                                             </Typography>
                                             {typeof review.rating === 'number' && review.rating >= 0 && review.rating <= 10 ? (
                                                 <Rating

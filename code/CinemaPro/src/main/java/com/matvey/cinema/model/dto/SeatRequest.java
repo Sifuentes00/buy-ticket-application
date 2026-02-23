@@ -42,4 +42,24 @@ public class SeatRequest {
     public List<Long> getTicketIds() {
         return ticketIds;
     }
+
+    public void setSeatRow(Integer seatRow) {
+        this.seatRow = seatRow;
+    }
+
+    public void setNumber(Integer number) {
+        this.number = number;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public void setTheaterId(Long theaterId) {
+        this.theaterId = theaterId;
+    }
+
+    public void setTicketIds(List<Long> ticketIds) {
+        this.ticketIds = ticketIds;
+    }
 }

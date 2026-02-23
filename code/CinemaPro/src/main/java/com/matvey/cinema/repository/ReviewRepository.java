@@ -19,16 +19,10 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             nativeQuery = true)
     List<Review> findReviewsByMovieTitle(String movieTitle);
 
-    @Query(value =
-            "SELECT r.* FROM reviews r JOIN users u ON r.user_id = u.id" + " WHERE u.username = ?1",
-            nativeQuery = true)
-    List<Review> findReviewsByUserUsername(String username);
-
     @Query(value = "SELECT * FROM reviews r WHERE r.movie_id = :movieId", nativeQuery = true)
     List<Review> findReviewsByMovieIdNative(@Param("movieId") Long movieId);
 
-    List<Review> findByUserId(Long userId);
+    List<Review> findByUsername(String username);
 
-    // TODO: Remove or refactor this default method if it's not used or causing issues
-    // default void updateReviewDetails(...) { ... }
+    List<Review> findByKeycloakUserId(String keycloakUserId);
 }

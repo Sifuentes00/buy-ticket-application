@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,7 +41,10 @@ public class ShowtimeController {
         this.showtimeRepository = showtimeRepository;
     }
 
+    // ========== 👀 ПРОСМОТР — ДОСТУПЕН ВСЕМ ==========
+
     @GetMapping("/{id}")
+    @PreAuthorize("permitAll()")
     @Operation(summary = "Получить сеанс по ID", description = "Возвращает сеанс с указанным ID")
     public ResponseEntity<Showtime> getShowtimeById(
             @Parameter(description = "Идентификатор сеанса", example = "1") @PathVariable Long id) {
@@ -54,6 +58,7 @@ public class ShowtimeController {
     }
 
     @GetMapping
+    @PreAuthorize("permitAll()")
     @Operation(summary = "Получить все сеансы",
             description = "Возвращает список всех сеансов в базе данных")
     public ResponseEntity<List<Showtime>> getAllShowtimes() {
@@ -63,6 +68,7 @@ public class ShowtimeController {
     }
 
     @GetMapping("/theater")
+    @PreAuthorize("permitAll()")
     @Operation(summary = "Получить сеансы по названию театра",
             description = "Возвращает список сеансов для указанного театра")
     public ResponseEntity<List<Showtime>> getShowtimesByTheaterName(
@@ -77,6 +83,7 @@ public class ShowtimeController {
     }
 
     @GetMapping("/movie")
+    @PreAuthorize("permitAll()")
     @Operation(summary = "Получить сеансы по названию фильма",
             description = "Возвращает список сеансов для указанного фильма")
     public ResponseEntity<List<Showtime>> getShowtimesByMovieTitle(
@@ -90,32 +97,34 @@ public class ShowtimeController {
         return ResponseEntity.ok(showtimes);
     }
 
-    @GetMapping("/movie/{movieId}") // Путь включает ID фильма как переменную пути
+    @GetMapping("/movie/{movieId}")
+    @PreAuthorize("permitAll()")
     @Operation(summary = "Получить сеансы по ID фильма",
             description = "Возвращает список сеансов для фильма с указанным ID")
     public ResponseEntity<List<Showtime>> getShowtimesByMovieId(
             @Parameter(description = "Идентификатор фильма", example = "1")
-            @PathVariable Long movieId) { // Аннотация @PathVariable связывает переменную пути с параметром метода
+            @PathVariable Long movieId) {
+
         logger.debug("Запрос на получение сеансов для фильма с ID: {}", movieId);
 
-        // Вызываем сервисный метод для получения сеансов по ID фильма
         List<Showtime> showtimes = showtimeService.findShowtimesByMovieId(movieId);
 
         if (showtimes == null || showtimes.isEmpty()) {
             logger.warn("Сеансы для фильма с ID {} не найдены", movieId);
-            // Возвращаем 200 OK с пустым списком, а не 404, если сеансов просто нет
-            return ResponseEntity.ok(List.of()); // Возвращаем пустой список
+            return ResponseEntity.ok(List.of());
         }
 
         logger.info("Найдено {} сеансов для фильма с ID {}", showtimes.size(), movieId);
-        return ResponseEntity.ok(showtimes); // Возвращаем список сеансов
+        return ResponseEntity.ok(showtimes);
     }
 
+
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Создать новый сеанс",
             description = "Создает новый сеанс на основе предоставленных данных")
     public ResponseEntity<Showtime> createShowtime(@Valid @RequestBody ShowtimeRequest
-                                                               showtimeRequest) {
+                                                           showtimeRequest) {
         logger.debug("Запрос на создание нового сеанса: {}", showtimeRequest);
         Showtime showtime = new Showtime();
 
@@ -129,13 +138,16 @@ public class ShowtimeController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Обновить сеанс",
             description = "Обновляет существующий сеанс с указанным ID")
     public ResponseEntity<Showtime> updateShowtimeWithMovieAndTheater(
             @Parameter(description = "Идентификатор сеанса для обновления",
                     example = "1") @PathVariable Long id,
             @Valid @RequestBody ShowtimeRequest showtimeRequest) {
+
         logger.debug("Запрос на обновление сеанса с ID: {}", id);
+
         Showtime existingShowtime = showtimeService.findById(id)
                 .orElseThrow(() -> {
                     logger.error("Сеанс не найден с ID: {}", id);
@@ -152,14 +164,15 @@ public class ShowtimeController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Удалить сеанс", description = "Удаляет сеанс с указанным ID")
     public ResponseEntity<Void> deleteShowtime(
             @Parameter(description = "Идентификатор сеанса для удаления",
                     example = "1") @PathVariable Long id) {
+
         logger.debug("Запрос на удаление сеанса с ID: {}", id);
         showtimeService.deleteById(id);
         logger.info("Сеанс с ID: {} успешно удален", id);
         return ResponseEntity.noContent().build();
     }
 }
-

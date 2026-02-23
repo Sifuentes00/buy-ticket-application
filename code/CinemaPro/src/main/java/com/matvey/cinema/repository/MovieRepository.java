@@ -13,5 +13,4 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
     @Query("SELECT m FROM Movie m LEFT JOIN FETCH m.reviews")
     List<Movie> findAllWithReviews();
 
-    // TODO: Add other custom query methods if needed
 }

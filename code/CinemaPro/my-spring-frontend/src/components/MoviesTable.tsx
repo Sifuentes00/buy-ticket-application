@@ -1,7 +1,11 @@
 // In file src/components/MoviesTable.tsx
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+
+// ↑ если у тебя файл называется иначе — замени путь сам
+import { hasRole } from '../keycloak';
+import {  apiGet, apiPost, apiPut, apiDelete } from '../api';
+
 import {
     Table,
     TableBody,
@@ -26,7 +30,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import StarIcon from '@mui/icons-material/Star';
 import EditIcon from '@mui/icons-material/Edit';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
 
 interface Movie {
     id: number;
@@ -56,7 +60,6 @@ interface DialogFormErrors {
 
 function MoviesTable() {
     const navigate = useNavigate();
-    const location = useLocation();
 
     const [movies, setMovies] = useState<Movie[]>([]);
     const [loading, setLoading] = useState(true);
@@ -68,8 +71,6 @@ function MoviesTable() {
     });
 
     const [dialogFormErrors, setDialogFormErrors] = useState<DialogFormErrors>({});
-
-    const API_URL = '/api/movies';
 
 
     const calculateAverageRating = (reviews?: Movie['reviews']): number | null => {
@@ -91,36 +92,48 @@ function MoviesTable() {
         return '#f44336'; // Красный
     };
 
-
     useEffect(() => {
         fetchMovies();
-    }, [location.key]);
-
+    }, []);
 
     const fetchMovies = () => {
         setLoading(true);
-        axios.get<Movie[]>(API_URL)
+
+        apiGet<any>('/movies')
             .then(response => {
-                const formattedMovies = response.data.map(movie => ({
+                const data = response.data;
+
+                // === ВАЖНО: аккуратно достаем массив ===
+                const moviesArray = Array.isArray(data)
+                    ? data
+                    : data.content || data.movies || [];
+
+                const formattedMovies = moviesArray.map((movie: any) => ({
                     ...movie,
                     reviews: movie.reviews || [],
                     showtimes: movie.showtimes || []
                 }));
+
                 setMovies(formattedMovies);
                 setLoading(false);
                 setError(null);
             })
             .catch(err => {
                 console.error("Error fetching movies:", err);
+                if (err.response?.status === 401) {
+                    console.warn("Токен истёк или отсутствует. Требуется повторный вход.");
+                }
                 setError('Не удалось загрузить фильмы.');
                 setLoading(false);
             });
     };
 
 
+
     const handleDelete = (id: number) => {
         if (window.confirm(`Вы уверены, что хотите удалить фильм?`)) {
-            axios.delete(`${API_URL}/${id}`)
+            apiDelete(`/movies/${id}`)
+
                 .then(() => {
                     setMovies(movies.filter(movie => movie.id !== id));
                     console.log(`Фильм с ID ${id} успешно удален.`);
@@ -222,24 +235,19 @@ function MoviesTable() {
             return;
         }
 
-        // === ИСПРАВЛЕНО: Не включаем 'id' в movieDataToSend для PUT запроса ===
-        // ID отправляется только в URL при редактировании
         const movieDataToSend = {
             title: dialogFormData.title.trim(),
             director: dialogFormData.director.trim(),
             releaseYear: parseInt(dialogFormData.releaseYear, 10),
             genre: dialogFormData.genre.trim(),
         };
-        // ====================================================================
 
 
         const isEditing = dialogFormData.id !== undefined;
 
         const apiCall = isEditing
-            ? axios.put<Movie>(
-                `${API_URL}/${dialogFormData.id}`, movieDataToSend // ID в URL
-            )
-            : axios.post<Movie>(API_URL, movieDataToSend); // Без ID (новый фильм)
+            ? apiPut<Movie>(`/movies/${dialogFormData.id}`, movieDataToSend)
+            : apiPost<Movie>('/movies', movieDataToSend)
 
 
         apiCall
@@ -333,14 +341,16 @@ function MoviesTable() {
                     justifyContent: 'flex-start',
                     width: '100%'
                 }}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        startIcon={<AddIcon />}
-                        onClick={() => handleOpenModal()}
-                    >
-                        Добавить фильм
-                    </Button>
+                    {hasRole("ADMIN") && (
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            startIcon={<AddIcon />}
+                            onClick={() => handleOpenModal()}
+                        >
+                            Добавить фильм
+                        </Button>
+                    )}
                 </Box>
                 <Typography color={textColor}>
                     Нет данных о фильмов. Вы можете добавить первый!
@@ -444,14 +454,16 @@ function MoviesTable() {
                 justifyContent: 'flex-start',
                 width: '100%'
             }}>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    startIcon={<AddIcon />}
-                    onClick={() => handleOpenModal()}
-                >
-                    Добавить фильм
-                </Button>
+                {hasRole("ADMIN") && (
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        startIcon={<AddIcon />}
+                        onClick={() => handleOpenModal()}
+                    >
+                        Добавить фильм
+                    </Button>
+                )}
             </Box>
 
 
@@ -635,14 +647,16 @@ function MoviesTable() {
                                             color: textColor
                                         }}
                                     >
-                                        <IconButton
-                                            aria-label="edit"
-                                            size="small"
-                                            color="primary"
-                                            onClick={() => handleOpenModal(movie)}
-                                        >
-                                            <EditIcon fontSize="small" />
-                                        </IconButton>
+                                        {hasRole("ADMIN") && (
+                                            <IconButton
+                                                aria-label="edit"
+                                                size="small"
+                                                color="primary"
+                                                onClick={() => handleOpenModal(movie)}
+                                            >
+                                                <EditIcon fontSize="small" />
+                                            </IconButton>
+                                        )}
                                     </TableCell>
                                     <TableCell
                                         align="center"
@@ -651,16 +665,17 @@ function MoviesTable() {
                                             color: textColor
                                         }}
                                     >
-                                        <IconButton
-                                            aria-label="delete"
-                                            size="small"
-                                            color="error"
-                                            onClick={() => handleDelete(movie.id)}
-                                        >
-                                            <DeleteIcon fontSize="small" />
-                                        </IconButton>
+                                        {hasRole("ADMIN") && (
+                                            <IconButton
+                                                aria-label="delete"
+                                                size="small"
+                                                color="error"
+                                                onClick={() => handleDelete(movie.id)}
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        )}
                                     </TableCell>
-                                    {/* ================================================================ */}
                                 </TableRow>
                             );
                         })}

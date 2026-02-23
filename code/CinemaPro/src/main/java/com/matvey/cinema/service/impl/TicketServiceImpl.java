@@ -7,11 +7,9 @@ import com.matvey.cinema.model.dto.TicketRequest;
 import com.matvey.cinema.model.entities.Seat;
 import com.matvey.cinema.model.entities.Showtime;
 import com.matvey.cinema.model.entities.Ticket;
-import com.matvey.cinema.model.entities.User;
 import com.matvey.cinema.repository.SeatRepository;
 import com.matvey.cinema.repository.ShowtimeRepository;
 import com.matvey.cinema.repository.TicketRepository;
-import com.matvey.cinema.repository.UserRepository;
 import com.matvey.cinema.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +22,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+
 
 @Service
 public class TicketServiceImpl implements TicketService {
@@ -31,7 +32,6 @@ public class TicketServiceImpl implements TicketService {
 
     private final TicketRepository ticketRepository;
     private final ShowtimeRepository showtimeRepository;
-    private final UserRepository userRepository;
     private final SeatRepository seatRepository;
     private final InMemoryCache cache;
 
@@ -41,86 +41,13 @@ public class TicketServiceImpl implements TicketService {
     @Autowired
     public TicketServiceImpl(TicketRepository ticketRepository,
                              ShowtimeRepository showtimeRepository,
-                             UserRepository userRepository,
                              SeatRepository seatRepository,
                              InMemoryCache cache) {
         this.ticketRepository = ticketRepository;
         this.showtimeRepository = showtimeRepository;
-        this.userRepository = userRepository;
         this.seatRepository = seatRepository;
         this.cache = cache;
     }
-
-
-    @Override
-    @Transactional(readOnly = true) // Транзакция только для чтения
-    public List<Ticket> findByUserId(Long userId) { // Используем имя findByUserId, которое вызывается в контроллере
-        // УДАЛЕНО: Логика кэширования (проверка наличия в кэше, извлечение, обработка)
-        // String cacheKey = CacheKeys.TICKETS_USER_PREFIX + userId;
-        logger.info("Finding tickets for user ID: {}", userId);
-
-        // УДАЛЕНО: Проверка кэша
-        // Optional<Object> cachedData = cache.get(cacheKey);
-        // if (cachedData.isPresent()) {
-        //     logger.info("Tickets for user ID {} found in cache.", userId);
-        //     Object data = cachedData.get();
-        //     if (data instanceof List) {
-        //         List<?> list = (List<?>) data;
-        //         if (list.isEmpty() || list.get(0) instanceof Ticket) {
-        //             try {
-        //                 List<Ticket> tickets = (List<Ticket>) data;
-        //                 tickets.forEach(ticket -> {
-        //                     // Проверка на null перед обращением к геттеру
-        //                     if (ticket.getShowtime() != null) {
-        //                         ticket.getShowtime().getMovie(); // Загрузка Movie через Showtime
-        //                     }
-        //                     if (ticket.getSeat() != null) {
-        //                         ticket.getSeat(); // Загрузка Seat
-        //                     }
-        //                 });
-        //                 return tickets;
-        //             } catch (ClassCastException e) {
-        //                 logger.error("ClassCastException when casting cached data for key: {}", cacheKey, e);
-        //                 cache.evict(cacheKey); // Очистить некорректные данные в кэше
-        //             }
-        //         }
-        //     }
-        //     // Если данные в кэше некорректны, очистить
-        //     cache.evict(cacheKey);
-        //     logger.warn("Incorrect data type in cache for key: {}", cacheKey);
-        // }
-
-        // === Получение данных напрямую из репозитория (ОСТАВЛЕНО) ===
-        // Получение данных из репозитория (без EntityGraph, предполагаем Lazy Loading)
-        List<Ticket> tickets = ticketRepository.findByUserId(userId);
-        // ============================================================
-
-
-        // --- Принудительная загрузка связанных сущностей ВНУТРИ ТРАНЗАКЦИИ (ОСТАВЛЕНО) ---
-        // Обходим каждый билет и обращаемся к геттерам связанных объектов
-        tickets.forEach(ticket -> {
-            // Проверка на null перед обращением к геттеру
-            if (ticket.getShowtime() != null) {
-                ticket.getShowtime().getMovie(); // Обращение к Movie через Showtime
-            }
-            if (ticket.getSeat() != null) {
-                ticket.getSeat(); // Обращение к Seat
-            }
-        });
-        // --- Конец принудительной загрузки ---
-
-        // УДАЛЕНО: Логика добавления в кэш
-        // Помещение полностью загруженных данных в кэш
-        // cache.put(cacheKey, tickets);
-        // logger.info("Tickets for user ID {} added to cache.", userId);
-
-        return tickets; // Возвращаем полученные из БД билеты
-    }
-
-    // --- КОНЕЦ МЕТОДА findByUserId ---
-
-
-    // Ваши существующие методы (оставлены для полноты, убедитесь, что они нужны и корректны):
 
     @Override
     @Transactional(readOnly = true)
@@ -224,63 +151,17 @@ public class TicketServiceImpl implements TicketService {
         return tickets;
     }
 
-
-    @Override
     @Transactional(readOnly = true)
-    public List<Ticket> findTicketsByUserUsername(String userUsername) {
-        String cacheKey = CacheKeys.TICKETS_USER_PREFIX + userUsername;
-        logger.info("Finding tickets for user: {}", userUsername);
+    public List<Ticket> findMyTickets() {
 
-        Optional<Object> cachedData = cache.get(cacheKey);
-        if (cachedData.isPresent()) {
-            logger.info("Tickets for user {} found in cache.", userUsername);
-            Object data = cachedData.get();
-            if (data instanceof List) {
-                List<?> list = (List<?>) data;
-                if (list.isEmpty() || list.get(0) instanceof Ticket) {
-                    try {
-                        List<Ticket> tickets = (List<Ticket>) data;
-                        // Принудительная загрузка связей после извлечения из кэша
-                        tickets.forEach(ticket -> {
-                            if(ticket.getShowtime() != null) {
-                                ticket.getShowtime().getMovie();
-                            }
-                            if(ticket.getSeat() != null) {
-                                ticket.getSeat();
-                            }
-                        });
-                        return tickets;
-                    } catch (ClassCastException e) {
-                        logger.error("ClassCastException when casting cached data for key: {}", cacheKey, e);
-                        cache.evict(cacheKey);
-                    }
-                }
-            }
-            cache.evict(cacheKey);
-            logger.warn("Incorrect data type in cache for key: {}", cacheKey);
-        }
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
 
-        // Получение данных из репозитория
-        List<Ticket> tickets = ticketRepository.findByUser_Username(userUsername);
+        String keycloakUserId = jwt.getSubject();
 
-        // --- Принудительная загрузка связанных сущностей ВНУТРИ ТРАНЗАКЦИИ ---
-        tickets.forEach(ticket -> {
-            if(ticket.getShowtime() != null) {
-                ticket.getShowtime().getMovie(); // Загрузка Movie через Showtime
-            }
-            if(ticket.getSeat() != null) {
-                ticket.getSeat(); // Загрузка Seat
-            }
-        });
-        // --- Конец принудительной загрузки ---
-
-
-        cache.put(cacheKey, tickets);
-        logger.info("Tickets for user {} added to cache.", userUsername);
-
-        return tickets;
+        return ticketRepository.findMyTicketsWithMovie(keycloakUserId);
     }
-
 
     @Override
     @Transactional(readOnly = true)
@@ -374,7 +255,7 @@ public class TicketServiceImpl implements TicketService {
         }
 
         // Получение данных из репозитория
-        List<Ticket> tickets = ticketRepository.findBySeatId(seatId);
+        List<Ticket> tickets = ticketRepository.findBySeat_Id(seatId);
 
         // --- Принудительная загрузка связанных сущностей ВНУТРИ ТРАНЗАКЦИИ ---
         tickets.forEach(ticket -> {
@@ -409,10 +290,10 @@ public class TicketServiceImpl implements TicketService {
             cache.evict(CacheKeys.TICKET_PREFIX + savedTicket.getId());
         }
 
-        Optional.ofNullable(savedTicket.getUser()).map(User::getId).ifPresent(userId -> {
-            cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId);
-            logger.info("Cache for tickets of user ID '{}' cleared upon saving.", userId);
-        });
+        if (savedTicket.getKeycloakUserId() != null) {
+            cache.evict(CacheKeys.TICKETS_USER_PREFIX + savedTicket.getKeycloakUserId());
+            logger.info("Cache for tickets of user '{}' cleared upon saving.", savedTicket.getKeycloakUserId());
+        }
         Optional.ofNullable(savedTicket.getShowtime()).map(Showtime::getId).ifPresent(showtimeId -> {
             cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId); // Очищаем также кэш для findByShowtimeId и findTicketsByShowtimeDateTime
             logger.info("Cache for tickets of showtime ID '{}' cleared upon saving.", showtimeId);
@@ -424,6 +305,23 @@ public class TicketServiceImpl implements TicketService {
         });
 
         return savedTicket;
+    }
+
+    public void deleteTicket(Long id) {
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        String keycloakUserId = jwt.getSubject();
+
+        Ticket ticket = ticketRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Билет не найден"));
+
+        if (!ticket.getKeycloakUserId().equals(keycloakUserId)) {
+            throw new RuntimeException("Нет доступа");
+        }
+
+        ticketRepository.delete(ticket);
     }
 
     @Transactional
@@ -442,10 +340,9 @@ public class TicketServiceImpl implements TicketService {
         cache.evict(CacheKeys.TICKETS_ALL);
         cache.evict(CacheKeys.TICKET_PREFIX + ticket.getId());
 
-        Optional.ofNullable(ticket.getUser()).map(User::getId).ifPresent(userId -> {
-            cache.evict(CacheKeys.TICKETS_USER_PREFIX + userId);
-            logger.info("Cache for tickets of user ID '{}' cleared upon deletion.", userId);
-        });
+        if (ticket.getKeycloakUserId() != null) {
+            cache.evict(CacheKeys.TICKETS_USER_PREFIX + ticket.getKeycloakUserId());
+        }
         Optional.ofNullable(ticket.getShowtime()).map(Showtime::getId).ifPresent(showtimeId -> {
             cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtimeId); // Очищаем кэш для findTicketsByShowtimeDateTime и findByShowtimeId
             logger.info("Cache for tickets of showtime ID '{}' cleared upon deletion.", showtimeId);
@@ -520,8 +417,6 @@ public class TicketServiceImpl implements TicketService {
     @Transactional // Транзакция для всей операции покупки
     @Override
     public List<Ticket> purchaseTickets(PurchaseRequestDto purchaseRequest) {
-        logger.info("Starting ticket purchase process for showtime ID: {}, user ID: {}, seats: {}",
-                purchaseRequest.getShowtimeId(), purchaseRequest.getUserId(), purchaseRequest.getSeatNumbers().size());
 
         // 1. Находим сеанс
         Showtime showtime = showtimeRepository.findById(purchaseRequest.getShowtimeId())
@@ -532,12 +427,16 @@ public class TicketServiceImpl implements TicketService {
         logger.debug("Found showtime: {}", showtime.getId());
 
         // 2. Находим пользователя
-        User user = userRepository.findById(purchaseRequest.getUserId())
-                .orElseThrow(() -> {
-                    logger.error("User not found with ID: {}", purchaseRequest.getUserId());
-                    return new RuntimeException("User not found with ID: " + purchaseRequest.getUserId());
-                });
-        logger.debug("Found user: {}", user.getId());
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        String keycloakUserId = jwt.getSubject();
+        String username = jwt.getClaim("preferred_username");
+        String email = jwt.getClaim("email");
+
+        logger.debug("User from JWT: sub={}, username={}", keycloakUserId, username);
+
 
         List<Ticket> createdTickets = new ArrayList<>();
         BigDecimal basePrice = BigDecimal.valueOf(300.0); // TODO: Determine real price based on showtime/seat/etc.
@@ -577,7 +476,9 @@ public class TicketServiceImpl implements TicketService {
             // Место свободно, создаем новый билет
             Ticket newTicket = new Ticket();
             newTicket.setShowtime(showtime); // Связываем с сеансом
-            newTicket.setUser(user); // Связываем с пользователем
+            newTicket.setKeycloakUserId(keycloakUserId);
+            newTicket.setUsername(username);
+            newTicket.setEmail(email);
             newTicket.setSeat(seatEntity); // Связываем с сущностью Seat
 
             // !!! ИСПРАВЛЕНИЕ: Устанавливаем строковое представление номера места !!!
@@ -600,20 +501,12 @@ public class TicketServiceImpl implements TicketService {
         // Очистка кэша для findByShowtimeId и findTicketsByShowtimeDateTime
         if (showtime.getId() != null) {
             cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtime.getId());
-            // Если используется кэш по дате/времени, также очистить его
-            // if (showtime.getDateTime() != null) {
-            //      cache.evict(CacheKeys.TICKETS_SHOWTIME_PREFIX + showtime.getDateTime());
-            // }
             logger.info("Cache for showtime ID '{}' cleared after purchase.", showtime.getId());
         }
         // Очистка кэша для findByUserId и findTicketsByUserUsername
-        if (user.getId() != null) {
-            cache.evict(CacheKeys.TICKETS_USER_PREFIX + user.getId()); // Ключ для findByUserId
-            // Если используется кэш по username, также очистить его
-            // if (user.getUsername() != null) {
-            //     cache.evict(CacheKeys.TICKETS_USER_PREFIX + user.getUsername());
-            // }
-            logger.info("Cache for user ID '{}' cleared after purchase.", user.getId());
+        if (keycloakUserId != null) {
+            cache.evict(CacheKeys.TICKETS_USER_PREFIX + keycloakUserId);
+            logger.info("Cache for user '{}' cleared after purchase.", keycloakUserId);
         }
         // Очистка кэша для конкретных билетов и связанных мест
         for (Ticket ticket : createdTickets) {
@@ -693,9 +586,18 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     @Override
     public Ticket mapTicketRequestToTicket(TicketRequest ticketRequest) {
+
+        Ticket ticket = new Ticket(); // ← СНАЧАЛА создаём
+
+        Jwt jwt = (Jwt) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+
+        ticket.setKeycloakUserId(jwt.getSubject());
+        ticket.setUsername(jwt.getClaim("preferred_username"));
+        ticket.setEmail(jwt.getClaim("email"));
+
         logger.debug("Mapping TicketRequest DTO to Ticket entity");
-        Ticket ticket = new Ticket();
-        // Handle null price from DTO (now it's Double)
         if (ticketRequest.getPrice() != null) {
             ticket.setPrice(BigDecimal.valueOf(ticketRequest.getPrice()));
         } else {
@@ -710,14 +612,6 @@ public class TicketServiceImpl implements TicketService {
             ticket.setShowtime(showtime);
         } else {
             throw new RuntimeException("Showtime ID in request cannot be null.");
-        }
-
-        if (ticketRequest.getUserId() != null) {
-            User user = userRepository.findById(ticketRequest.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + ticketRequest.getUserId()));
-            ticket.setUser(user);
-        } else {
-            throw new RuntimeException("User ID in request cannot be null.");
         }
 
         // Find Seat by ID from DTO and set relation.
@@ -741,6 +635,8 @@ public class TicketServiceImpl implements TicketService {
     @Transactional
     @Override
     public Ticket updateTicketFromRequest(Ticket existingTicket, TicketRequest ticketRequest) {
+
+
         logger.debug("Updating existing Ticket entity with data from TicketRequest DTO");
         // Handle null price from DTO (now it's Double)
         if (ticketRequest.getPrice() != null) {
@@ -759,15 +655,6 @@ public class TicketServiceImpl implements TicketService {
             existingTicket.setShowtime(null); // Или оставьте текущий, если null в DTO означает не обновлять
         }
 
-        // Обновляем User, если приходит новое ID
-        if (ticketRequest.getUserId() != null) {
-            User user = userRepository.findById(ticketRequest.getUserId())
-                    .orElseThrow(() -> new RuntimeException("User not found with ID: " + ticketRequest.getUserId()));
-            existingTicket.setUser(user);
-        } else {
-            existingTicket.setUser(null); // Или оставьте текущего пользователя
-        }
-
         // Обновляем Seat, если приходит новое ID
         if (ticketRequest.getSeatId() != null) {
             Seat seat = seatRepository.findById(ticketRequest.getSeatId())
@@ -783,5 +670,4 @@ public class TicketServiceImpl implements TicketService {
         return existingTicket;
     }
 
-    // TODO: Implement findTicketsByShowtimeDateTime, findTicketsBySeatId, findByShowtimeId, findByShowtimeAndSeatNumber methods with manual fetching and caching
 }

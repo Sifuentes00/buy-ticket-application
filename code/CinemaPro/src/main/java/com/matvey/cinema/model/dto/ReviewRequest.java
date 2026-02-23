@@ -15,9 +15,6 @@ public class ReviewRequest {
     @NotNull(message = "Поле 'movieId' не должно быть пустым")
     private Long movieId;
 
-    @NotNull(message = "Поле 'userId' не должно быть пустым")
-    private Long userId;
-
     @NotNull(message = "Поле 'rating' не должно быть пустым") // Добавьте, если рейтинг обязателен
     @Min(value = 1, message = "Рейтинг должен быть не меньше 1") // Добавьте, если есть мин. значение
     @Max(value = 10, message = "Рейтинг должен быть не больше 10") // Добавьте, если есть макс. значение
@@ -27,14 +24,17 @@ public class ReviewRequest {
         return content;
     }
 
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Long getMovieId() {
         return movieId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public void setMovieId(Long movieId) {
+        this.movieId = movieId;
     }
-
 
     public Integer getRating() {
         return rating;

@@ -13,9 +13,7 @@ public interface TicketService {
 
     Optional<Ticket> findById(Long id);
 
-    List<Ticket> findByUserId(Long userId);
-
-    List<Ticket> findTicketsByUserUsername(String userUsername);
+     List<Ticket> findMyTickets();
 
     List<Ticket> findTicketsByShowtimeDateTime(String showtimeDateTime);
 
@@ -28,6 +26,8 @@ public interface TicketService {
     Ticket save(Ticket ticket);
 
     void deleteById(Long id);
+
+    void deleteTicket(Long id);
 
     Ticket updateTicketFromRequest(Ticket existingTicket, TicketRequest ticketRequest);
 

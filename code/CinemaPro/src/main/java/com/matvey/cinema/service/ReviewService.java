@@ -15,15 +15,18 @@ public interface ReviewService {
 
     List<Review> findReviewsByMovieId(Long movieId);
 
-    List<Review> findReviewsByUserUsername(String userUsername);
-
     Review save(Review review);
 
     void deleteById(Long id);
 
-    List<Review> findByUserId(Long userId);
-
-    Review createReview(ReviewRequest reviewRequest); // Method to create from DTO
+    Review createReview(
+            ReviewRequest reviewRequest,
+            String keycloakUserId,
+            String username,
+            String email
+    ); // Method to create from DTO
 
     Review updateReview(Long reviewId, ReviewRequest reviewRequest); // Method to update from DTO
+
+    List<Review> findMyReviews();
 }

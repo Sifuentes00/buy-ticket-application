@@ -19,13 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-// import org.springframework.transaction.annotation.Transactional; // Not typically needed on controllers when service is transactional
 
 @RestController
 @RequestMapping("/api/movies")
 @Tag(name = "Movie Controller", description = "API для управления фильмами")
 public class MovieController {
+
     private final MovieService movieService;
     private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
 
@@ -33,6 +34,7 @@ public class MovieController {
         this.movieService = movieService;
     }
 
+    // ✅ Доступно всем
     @GetMapping("/{id}")
     @Operation(summary = "Получить фильм по ID", description = "Возвращает фильм с указанным ID")
     @ApiResponses(value = {
@@ -54,6 +56,7 @@ public class MovieController {
                 });
     }
 
+    // ✅ Доступно всем
     @GetMapping
     @Operation(summary = "Получить все фильмы",
             description = "Возвращает список всех фильмов в базе данных")
@@ -68,6 +71,8 @@ public class MovieController {
         return ResponseEntity.ok(movies);
     }
 
+    // 🔒 Только админ
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     @Operation(summary = "Создать новый фильм",
             description = "Создает новый фильм на основе предоставленных данных")
@@ -90,6 +95,8 @@ public class MovieController {
         }
     }
 
+    // 🔒 Только админ
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     @Operation(summary = "Обновить фильм",
             description = "Обновляет существующий фильм с указанным ID")
@@ -97,22 +104,14 @@ public class MovieController {
             @ApiResponse(responseCode = "200", description = "Фильм успешно обновлен",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Movie.class))),
-            @ApiResponse(responseCode = "400",
-                    description = "Неверные входные данные", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Неверные входные данные", content = @Content),
             @ApiResponse(responseCode = "404", description = "Фильм не найден", content = @Content)
     })
-    // @Transactional // Transactionality should be handled by the service layer
     public ResponseEntity<Movie> updateMovie(
-            @Parameter(description = "Идентификатор фильма для обновления",
-                    example = "1") @PathVariable Long id,
+            @Parameter(description = "Идентификатор фильма для обновления", example = "1") @PathVariable Long id,
             @Valid @RequestBody MovieRequest movieRequest) {
         logger.debug("Запрос на обновление фильма с ID: {}", id);
         try {
-            // TODO: Implement updateMovie method in MovieService and call it here
-            // Movie updatedMovie = movieService.updateMovie(id, movieRequest);
-            // return ResponseEntity.ok(updatedMovie);
-
-            // Temporary solution: find, update fields manually (not recommended)
             Movie existingMovie = movieService.findById(id)
                     .orElseThrow(() -> new CustomNotFoundException("Фильм не найден с ID: " + id));
 
@@ -120,12 +119,10 @@ public class MovieController {
             existingMovie.setDirector(movieRequest.getDirector());
             existingMovie.setReleaseYear(movieRequest.getReleaseYear());
             existingMovie.setGenre(movieRequest.getGenre());
-            // TODO: Update reviews/showtimes collections here or in the updateMovie service method
 
-            Movie updatedMovie = movieService.save(existingMovie); // Save the updated entity
+            Movie updatedMovie = movieService.save(existingMovie);
             logger.info("Фильм с ID: {} успешно обновлен.", id);
             return ResponseEntity.ok(updatedMovie);
-
 
         } catch (CustomNotFoundException e) {
             logger.error("Фильм с ID {} не найден для обновления", id);
@@ -136,18 +133,16 @@ public class MovieController {
         }
     }
 
+    // 🔒 Только админ
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Удалить фильм", description = "Удаляет фильм с указанным ID")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "204",
-                    description = "Фильм успешно удален", content = @Content),
-            @ApiResponse(responseCode = "404",
-                    description = "Фильм не найден", content = @Content)
+            @ApiResponse(responseCode = "204", description = "Фильм успешно удален", content = @Content),
+            @ApiResponse(responseCode = "404", description = "Фильм не найден", content = @Content)
     })
-    // @Transactional // Transactionality should be handled by the service layer
     public ResponseEntity<Void> deleteMovie(
-            @Parameter(description = "Идентификатор фильма для удаления",
-                    example = "1") @PathVariable Long id) {
+            @Parameter(description = "Идентификатор фильма для удаления", example = "1") @PathVariable Long id) {
         logger.debug("Запрос на удаление фильма с ID: {}", id);
         try {
             movieService.deleteById(id);

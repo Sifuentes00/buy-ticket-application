@@ -22,13 +22,16 @@ public class Ticket {
     @NotNull(message = "Сеанс не должен быть пустым")
     @ManyToOne
     @JoinColumn(name = "showtime_id", nullable = false)
-    //@JsonBackReference
     private Showtime showtime;
 
-    @NotNull(message = "Пользователь не должен быть пустым")
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "keycloak_user_id", nullable = false)
+    private String keycloakUserId;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "email")
+    private String email;
 
     @NotNull(message = "Место (сущность) не должно быть пустым")
     @ManyToOne
@@ -71,19 +74,35 @@ public class Ticket {
         this.showtime = showtime;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Seat getSeat() {
         return seat;
     }
 
     public void setSeat(Seat seat) {
         this.seat = seat;
+    }
+
+    public String getKeycloakUserId() {
+        return keycloakUserId;
+    }
+
+    public void setKeycloakUserId(String keycloakUserId) {
+        this.keycloakUserId = keycloakUserId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }
