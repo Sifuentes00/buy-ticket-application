@@ -14,12 +14,7 @@ Frontend — многостраничное приложение на React, Bac
 
 ### Выбор технологий
 
-| Компонент | Технология | Обоснование |
-|------------|-----------|-------------|
-| Backend | Spring Boot | REST API, высокая поддержка безопасности, простота интеграции с базой данных, наличие готовых инструментов для тестирования и разработки |
-| Frontend | React + Vite | MPA с динамической загрузкой данных, быстрая разработка интерфейсов, поддержка современных UI-библиотек |
-| Аутентификация | Keycloak | Централизованная авторизация и аутентификация, поддержка ролей и JWT, упрощение управления безопасностью |
-| База данных | PostgreSQL | Надёжная реляционная СУБД с поддержкой транзакций, сложных запросов и индексации данных |
+![Описание технологий](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/ClassDiagrams/part1.png) 
 
 ### Показатели качества
 
@@ -38,42 +33,9 @@ Frontend — многостраничное приложение на React, Bac
 
 ### Реальная архитектура (As Is)
 
-Сгенерированные диаграммы классов (или текстовая схема) на основе текущего кода проекта:
+Схема backend-части системы на основе текущего кода проекта:
 
-**Controllers:**  
-- MovieController  
-- ReviewController  
-- SeatController  
-- ShowtimeController
-- TheaterController
-- TicketController
-
-**Services:**  
-- MovieService  
-- ReviewService  
-- SeatService 
-- ShowtimeService
-- TheaterService
-- TicketService
-
-**Repositories:**  
-- MovieRepository  
-- ReviewRepository  
-- SeatRepository 
-- ShowtimeRepository 
-- TheaterRepository 
-- TicketRepository 
-
-**Entities:**  
-- Movie 
-- Review 
-- Seat
-- Showtime
-- Theater
-- Ticket
-
-**Other:**  
-- KeycloakIntegration (SecurityConfig, JWTFilter)  
+![Схема backend-части](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/ClassDiagrams/part2.png) 
 
 **Отличия от идеальной архитектуры:**
 
@@ -84,12 +46,7 @@ Frontend — многостраничное приложение на React, Bac
 
 ### Сравнение и улучшения
 
-| Пункт | Идеальная архитектура | Реальная архитектура |
-|-------|---------------------|--------------------|
-| Слои | Controller → Service → Repository → Entity | Иногда бизнес-логика смешана с контроллерами |
-| DTO | Используются DTO для передачи данных | DTO отсутствуют, передаются Entity напрямую |
-| Сквозная функциональность | Централизованное логирование, обработка ошибок | Локальное логирование и обработка ошибок |
-| Безопасность | Keycloak через фильтры, все слои защищены | Частичная интеграция, часть проверок в контроллерах |
+![Вывод](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/ClassDiagrams/result.png) 
 
 **Причины отличий:**  
 - MVP реализации для первого спринта  
