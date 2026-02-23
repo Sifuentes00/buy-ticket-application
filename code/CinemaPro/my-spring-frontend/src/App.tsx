@@ -31,21 +31,14 @@ import { Routes, Route, useNavigate /* Removed Link import */ } from 'react-rout
 
 import axios from 'axios'; // <-- Imported axios
 
-// УДАЛЕНО: Импорт useAuth, поскольку файла AuthContext нет
-// import { useAuth } from './context/AuthContext';
 
-
-// Define User type
 interface User {
     id: number;
     username: string;
     email: string;
-    password?: string; // Optional on frontend
-    // tickets?: Array<{ id: number /* other ticket fields */ }>; // Not needed in App state usually
-    // reviews?: Array<{ id: number; rating: number /* other review fields */ }>; // Not needed in App state usually
+    password?: string;
 }
 
-// Define type for login/register form data
 interface UserFormData {
     username: string;
     email: string;
