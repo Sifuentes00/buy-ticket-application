@@ -33,6 +33,17 @@ interface AppProps {
     keycloak: Keycloak;
 }
 
+// 🔽 В САМОМ ВЕРХУ ФАЙЛА (после импортов)
+
+interface KeycloakTokenExtended {
+    sub?: string;
+    email?: string;
+    preferred_username?: string;
+    realm_access?: {
+        roles?: string[];
+    };
+}
+
 // --- App Component ---
 function App({ keycloak }: AppProps) {
 
@@ -49,17 +60,20 @@ function App({ keycloak }: AppProps) {
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
 
-    // ============================================================
-    //  ЗАГРУЗКА ПОЛЬЗОВАТЕЛЯ ИЗ KEYCLOAK (вместо localStorage)
-    // ============================================================
     useEffect(() => {
         if (keycloak.authenticated && keycloak.tokenParsed) {
-            const token: any = keycloak.tokenParsed;
+            const token = keycloak.tokenParsed as KeycloakTokenExtended;
+
+            if (!token.sub || !token.email) {
+                setCurrentUser(null);
+                return;
+            }
+
             setCurrentUser({
                 id: token.sub,
-                username: token.preferred_username || token.email,
+                username: token.preferred_username ?? token.email,
                 email: token.email,
-                roles: token.realm_access?.roles || []
+                roles: token.realm_access?.roles ?? []
             });
         } else {
             setCurrentUser(null);
@@ -85,9 +99,6 @@ function App({ keycloak }: AppProps) {
         setFormError(null);
     };
 
-    // ============================================================
-    //  ЛОГИН / РЕГИСТРАЦИЯ ЧЕРЕЗ KEYCLOAK
-    // ============================================================
     const handleSubmit = async () => {
         let hasError = false;
         setUsernameError(null);
@@ -131,7 +142,7 @@ function App({ keycloak }: AppProps) {
             }
 
             handleCloseDialog();
-        } catch (e) {
+        } catch {
             setFormError('Не удалось выполнить вход через Keycloak');
         } finally {
             setIsSubmitting(false);
