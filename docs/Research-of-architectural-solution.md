@@ -34,7 +34,7 @@ Frontend — многостраничное приложение на React, Bac
 
 ### Диаграмма To Be 
 
-![Диаграмма To Be](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/ClassDiagrams/tobe.png) 
+![Диаграмма To Be](https://github.com/Sifuentes00/buy-ticket-application/blob/main/docs/ClassDiagrams/tobe.jpg) 
 
 ### Реальная архитектура (As Is)
 
