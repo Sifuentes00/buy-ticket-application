@@ -4,9 +4,8 @@ import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.dto.ReviewRequest;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.model.entities.Review;
-import com.matvey.cinema.model.entities.User;
+import com.matvey.cinema.repository.MovieRepository;
 import com.matvey.cinema.repository.ReviewRepository;
-import com.matvey.cinema.repository.UserRepository;
 import com.matvey.cinema.service.MovieService;
 import com.matvey.cinema.service.ReviewService;
 import org.slf4j.Logger;
@@ -14,6 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -23,17 +25,17 @@ public class ReviewServiceImpl implements ReviewService {
     private static final Logger logger = LoggerFactory.getLogger(ReviewServiceImpl.class);
 
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
+    private final MovieRepository movieRepository;
     private final InMemoryCache cache;
     private final MovieService movieService;
 
     @Autowired
     public ReviewServiceImpl(ReviewRepository reviewRepository,
-                             UserRepository userRepository,
+                             MovieRepository movieRepository,
                              InMemoryCache cache,
                              MovieService movieService) {
         this.reviewRepository = reviewRepository;
-        this.userRepository = userRepository;
+        this.movieRepository = movieRepository;
         this.cache = cache;
         this.movieService = movieService;
     }
@@ -99,36 +101,6 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews;
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Review> findByUserId(Long userId) {
-        String cacheKey = "review::user_id:" + userId; // Более конкретный ключ
-        logger.info("Finding reviews for user ID: {}", userId);
-
-        Optional<Object> cachedData = cache.get(cacheKey);
-        if (cachedData.isPresent()) {
-            logger.info("Reviews for user ID {} found in cache.", userId);
-            Object data = cachedData.get();
-            if (data instanceof List) {
-                List<?> list = (List<?>) data;
-                if (!list.isEmpty() && list.get(0) instanceof Review) {
-                    return (List<Review>) data;
-                } else if (list.isEmpty()) {
-                    return (List<Review>) data;
-                }
-            }
-            cache.evict(cacheKey);
-            logger.warn("Incorrect data type in cache for key: {}", cacheKey);
-        }
-
-        List<Review> reviews = reviewRepository.findByUserId(userId);
-
-        cache.put(cacheKey, reviews);
-        logger.info("Reviews for user ID {} added to cache.", userId);
-
-        return reviews;
-    }
-
 
     @Transactional
     @Override
@@ -142,10 +114,6 @@ public class ReviewServiceImpl implements ReviewService {
         if (savedReview.getId() != null) {
             cache.evict("review::id:" + savedReview.getId());
         }
-        Optional.ofNullable(savedReview.getUser()).map(User::getId).ifPresent(userId -> {
-            cache.evict("review::user_id:" + userId);
-            logger.info("Cache for reviews of user ID '{}' cleared upon saving.", userId);
-        });
         Optional.ofNullable(savedReview.getMovie()).map(Movie::getId).ifPresent(movieId -> {
             cache.evict("review::movie_id:" + movieId);
             logger.info("Cache for reviews of movie ID '{}' cleared upon saving.", movieId);
@@ -158,30 +126,28 @@ public class ReviewServiceImpl implements ReviewService {
         return savedReview;
     }
 
-
     @Transactional
     @Override
-    public Review createReview(ReviewRequest reviewRequest) {
-        logger.info("Creating review from ReviewRequest for movie ID: {}, user ID: {}",
-                reviewRequest.getMovieId(), reviewRequest.getUserId());
+    public Review createReview(
+            ReviewRequest reviewRequest,
+            String keycloakUserId,
+            String username,
+            String email
+    ) {
 
-        Movie movie = movieService.findById(reviewRequest.getMovieId())
-                .orElseThrow(() -> new RuntimeException("Фильм не найден с ID: " + reviewRequest.getMovieId()));
+        Movie movie = movieRepository.findById(reviewRequest.getMovieId())
+                .orElseThrow(() -> new RuntimeException("Фильм не найден"));
 
-        User user = userRepository.findById(reviewRequest.getUserId())
-                .orElseThrow(() -> new RuntimeException("Пользователь не найден с ID: " + reviewRequest.getUserId()));
+        Review review = new Review();
+        review.setContent(reviewRequest.getContent());
+        review.setRating(reviewRequest.getRating());
+        review.setMovie(movie);
 
-        Review newReview = new Review();
-        newReview.setMovie(movie);
-        newReview.setUser(user);
-        newReview.setRating(reviewRequest.getRating());
-        newReview.setContent(reviewRequest.getContent());
+        review.setKeycloakUserId(keycloakUserId);
+        review.setUsername(username);
+        review.setEmail(email);
 
-        Review savedReview = save(newReview);
-
-        logger.info("Review successfully created and saved with ID: {}", savedReview.getId());
-
-        return savedReview;
+        return save(review);
     }
 
     @Transactional
@@ -226,11 +192,6 @@ public class ReviewServiceImpl implements ReviewService {
         if (review.getId() != null) {
             cache.evict("review::id:" + review.getId());
         }
-
-        Optional.ofNullable(review.getUser()).map(User::getId).ifPresent(userId -> {
-            cache.evict("review::user_id:" + userId);
-            logger.info("Cache for reviews of user ID '{}' cleared upon deletion.", userId);
-        });
         // Очистка кеша фильма и всех фильмов с отзывами при удалении
         if (movieId != null) {
             cache.evict("review::movie_id:" + movieId);
@@ -303,34 +264,13 @@ public class ReviewServiceImpl implements ReviewService {
         return reviews;
     }
 
-    @Override
     @Transactional(readOnly = true)
-    public List<Review> findReviewsByUserUsername(String userUsername) {
-        String cacheKey = "review::user_username:" + userUsername; // Более конкретный ключ
-        logger.info("Finding reviews by user username: {}", userUsername);
+    public List<Review> findMyReviews() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+        var jwt = (org.springframework.security.oauth2.jwt.Jwt) authentication.getPrincipal();
 
-        Optional<Object> cachedData = cache.get(cacheKey);
-        if (cachedData.isPresent()) {
-            logger.info("Reviews for user username {} found in cache.", userUsername);
-            Object data = cachedData.get();
-            if (data instanceof List) {
-                List<?> list = (List<?>) data;
-                if (!list.isEmpty() && list.get(0) instanceof Review) {
-                    return (List<Review>) data;
-                } else if (list.isEmpty()) {
-                    return (List<Review>) data;
-                }
-            }
-            cache.evict(cacheKey);
-            logger.warn("Incorrect data type in cache for key: {}", cacheKey);
-        }
-
-        List<Review> reviews = reviewRepository.findReviewsByUserUsername(userUsername);
-
-        cache.put(cacheKey, reviews);
-        logger.info("Reviews for user username {} added to cache.", userUsername);
-
-        return reviews;
+        String keycloakUserId = jwt.getSubject();
+        return reviewRepository.findByKeycloakUserId(keycloakUserId);
     }
 }
 

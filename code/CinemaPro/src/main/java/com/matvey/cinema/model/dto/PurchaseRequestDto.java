@@ -14,16 +14,8 @@ public class PurchaseRequestDto {
     @NotEmpty // Список номеров мест не должен быть пустым
     private List<String> seatNumbers; // Список номеров мест, как на фронтенде ("1-5")
 
-    @NotNull(message = "Поле 'userId' не должно быть пустым")
-    private Long userId;
-
-    // TODO: Возможно, добавьте поля для цены, если хотите получать ее с фронтенда (но лучше рассчитывать на бэкенде)
-    // private double totalPrice;
-
     public PurchaseRequestDto() {
     }
-
-    // TODO: Конструктор, если нужен
 
     public Long getShowtimeId() {
         return showtimeId;
@@ -41,14 +33,4 @@ public class PurchaseRequestDto {
         this.seatNumbers = seatNumbers;
     }
 
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    // TODO: Геттер/сеттер для цены, если добавили
 }
-// <-- КОНЕЦ ДОБАВЛЕНО -->

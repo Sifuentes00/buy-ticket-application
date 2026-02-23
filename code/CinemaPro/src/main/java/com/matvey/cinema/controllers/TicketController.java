@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Tag(name = "Ticket Controller", description = "API for managing tickets")
-@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/tickets")
 public class TicketController {
     private final TicketService ticketService;
@@ -53,19 +52,6 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
 
-    @GetMapping("/user")
-    @Operation(summary = "Get tickets by username")
-    public ResponseEntity<List<Ticket>> getTicketsByUserUsername(
-            @Parameter(description = "Username") @RequestParam String userUsername) {
-        logger.debug("Request to get tickets for user {}", userUsername);
-        List<Ticket> tickets = ticketService.findTicketsByUserUsername(userUsername);
-        if (tickets.isEmpty()) {
-            logger.debug("Tickets for user {} not found (returning 204)", userUsername);
-            return ResponseEntity.noContent().build();
-        }
-        logger.debug("Found {} tickets for user {}", tickets.size(), userUsername);
-        return ResponseEntity.ok(tickets);
-    }
 
     @GetMapping("/showtime_datetime")
     @Operation(summary = "Get tickets by showtime datetime")
@@ -108,21 +94,9 @@ public class TicketController {
         return ResponseEntity.ok(tickets);
     }
 
-    @GetMapping("/user/{userId}") // Новый эндпоинт
-    @Operation(summary = "Get tickets by user ID",
-            description = "Returns a list of all tickets for the specified user")
-    public ResponseEntity<List<Ticket>> getTicketsByUserId(
-            @Parameter(description = "ID of the user") @PathVariable Long userId) {
-        logger.debug("Request to get tickets for user ID: {}", userId);
-        List<Ticket> tickets = ticketService.findByUserId(userId); // Вызываем метод сервиса
-
-        if (tickets.isEmpty()) {
-            logger.debug("Tickets for user ID {} not found (returning 204)", userId);
-            return ResponseEntity.noContent().build(); // 204 No Content if no tickets
-        }
-
-        logger.debug("Found {} tickets for user ID {}", tickets.size(), userId);
-        return ResponseEntity.ok(tickets); // 200 OK with list of tickets
+    @GetMapping("/my")
+    public List<Ticket> getMyTickets() {
+        return ticketService.findMyTickets();
     }
 
     @PostMapping // Endpoint for creating a SINGLE ticket (if TicketRequest DTO is for this)
@@ -130,7 +104,6 @@ public class TicketController {
     public ResponseEntity<Ticket> createTicket(@Valid @RequestBody TicketRequest ticketRequest) {
         logger.debug("Request to create a new ticket (single): {}", ticketRequest);
         try {
-            // Map DTO to entity and save via service
             Ticket ticketToSave = ticketService.mapTicketRequestToTicket(ticketRequest);
             Ticket savedTicket = ticketService.save(ticketToSave);
 
@@ -178,30 +151,15 @@ public class TicketController {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete ticket")
-    public ResponseEntity<Void> deleteTicket(
-            @Parameter(description = "Ticket ID for deletion") @PathVariable Long id) {
-        logger.debug("Request to delete ticket with ID: {}", id);
-        try {
-            ticketService.deleteById(id); // Delete via service
-            logger.info("Ticket with ID: {} successfully deleted", id);
-            return ResponseEntity.noContent().build(); // 204 No Content
-        } catch (RuntimeException e) {
-            // Catch RuntimeException if ticket not found
-            logger.error("Error deleting ticket with ID {}: {}", id, e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-        } catch (Exception e) {
-            logger.error("Unexpected error while deleting ticket with ID {}", id, e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
+    public ResponseEntity<Void> deleteTicket(@PathVariable Long id) {
+        ticketService.deleteTicket(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/purchase") // Endpoint for purchasing MULTIPLE tickets
     @Operation(summary = "Purchase tickets")
     public ResponseEntity<List<Ticket>> purchaseTickets(@Valid @RequestBody PurchaseRequestDto purchaseRequest) {
-        logger.debug("Request to purchase tickets: showtime ID: {}, user ID: {}, seats: {}",
-                purchaseRequest.getShowtimeId(), purchaseRequest.getUserId(), purchaseRequest.getSeatNumbers().size());
-
+       
         try {
             // Call the service method that handles purchase logic and transaction
             List<Ticket> purchasedTickets = ticketService.purchaseTickets(purchaseRequest);

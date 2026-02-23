@@ -3,13 +3,7 @@
 package com.matvey.cinema.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -30,10 +24,14 @@ public class Review {
     @Size(max = 1000, message = "Комментарий не должен превышать 1000 символов")
     private String content;
 
-    @NotNull(message = "Отзыв должен быть связан с пользователем")
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(nullable = false)
+    private String keycloakUserId;
+
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false)
+    private String email;
 
     @NotNull(message = "Отзыв должен быть связан с фильмом")
     @ManyToOne
@@ -71,12 +69,28 @@ public class Review {
         this.content = content;
     }
 
-    public User getUser() {
-        return user;
+    public String getKeycloakUserId() {
+        return keycloakUserId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setKeycloakUserId(String keycloakUserId) {
+        this.keycloakUserId = keycloakUserId;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public Movie getMovie() {

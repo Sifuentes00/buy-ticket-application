@@ -134,32 +134,6 @@ class TicketServiceImplTest {
         verify(ticketRepository, never()).deleteById(ticket.getId());
     }
 
-    @Test
-    void testFindTicketsByUserUsername_TicketsFoundInCache() {
-        String cacheKey = CacheKeys.TICKETS_USER_PREFIX + "TestUser";
-        when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(ticket)));
-
-        List<Ticket> tickets = ticketService.findTicketsByUserUsername("TestUser");
-
-        assertEquals(1, tickets.size());
-        assertEquals(ticket, tickets.get(0));
-        verify(cache, times(1)).get(cacheKey);
-        verify(ticketRepository, never()).findTicketsByUserUsername(anyString());
-    }
-
-    @Test
-    void testFindTicketsByUserUsername_TicketsNotFoundInCache() {
-        String cacheKey = CacheKeys.TICKETS_USER_PREFIX + "TestUser";
-        when(cache.get(cacheKey)).thenReturn(Optional.empty());
-        when(ticketRepository.findTicketsByUserUsername("TestUser")).thenReturn(Collections.singletonList(ticket));
-
-        List<Ticket> tickets = ticketService.findTicketsByUserUsername("TestUser");
-
-        assertEquals(1, tickets.size());
-        assertEquals(ticket, tickets.get(0));
-        verify(ticketRepository, times(1)).findTicketsByUserUsername("TestUser");
-        verify(cache, times(1)).put(cacheKey, Collections.singletonList(ticket));
-    }
 
     @Test
     void testFindTicketsByShowtimeDateTime_TicketsFoundInCache() {

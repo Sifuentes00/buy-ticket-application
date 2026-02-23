@@ -127,35 +127,6 @@ class ReviewServiceImplTest {
     }
 
     @Test
-    void testFindReviewsByUserUsername_ReviewsFoundInCache() {
-        String username = "TestUser";
-        String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + username;
-        when(cache.get(cacheKey)).thenReturn(Optional.of(Collections.singletonList(review)));
-
-        List<Review> reviews = reviewService.findReviewsByUserUsername(username);
-
-        assertEquals(1, reviews.size());
-        assertEquals(review, reviews.get(0));
-        verify(cache, times(1)).get(cacheKey);
-        verify(reviewRepository, never()).findReviewsByUserUsername(anyString());
-    }
-
-    @Test
-    void testFindReviewsByUserUsername_ReviewsNotFoundInCache() {
-        String username = "TestUser";
-        String cacheKey = CacheKeys.REVIEWS_USER_PREFIX + username;
-        when(cache.get(cacheKey)).thenReturn(Optional.empty());
-        when(reviewRepository.findReviewsByUserUsername(username)).thenReturn(Collections.singletonList(review));
-
-        List<Review> reviews = reviewService.findReviewsByUserUsername(username);
-
-        assertEquals(1, reviews.size());
-        assertEquals(review, reviews.get(0));
-        verify(reviewRepository, times(1)).findReviewsByUserUsername(username);
-        verify(cache, times(1)).put(cacheKey, Collections.singletonList(review));
-    }
-
-    @Test
     void testSave_ReviewSuccessfullySaved() {
         when(reviewRepository.save(review)).thenReturn(review);
 

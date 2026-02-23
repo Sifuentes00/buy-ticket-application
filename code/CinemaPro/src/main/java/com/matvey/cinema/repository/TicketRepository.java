@@ -18,12 +18,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
-    // Your original methods (assuming they work with your DB schema)
-    @Query(value =
-            "SELECT t.* FROM tickets t JOIN users u ON t.user_id = u.id WHERE u.username = ?1",
-            nativeQuery = true)
-    List<Ticket> findTicketsByUserUsername(String username);
-
     @Query(value =
             "SELECT t.* FROM tickets t JOIN showtimes s ON t.showtime_id=s.id WHERE s.date_time=?1",
             nativeQuery = true)
@@ -32,24 +26,19 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     @Query(value = "SELECT * FROM tickets WHERE seat_id = ?1", nativeQuery = true)
     List<Ticket> findTicketsBySeatId(Long seatId);
 
-    // <-- RETURNED: Your original methods for finding foreign key IDs -->
-    @Query(value = "SELECT user_id FROM tickets WHERE id = :id", nativeQuery = true)
-    Optional<Long> findUserIdById(@Param("id") Long id);
-
     @Query(value = "SELECT showtime_id FROM tickets WHERE id = :id", nativeQuery = true)
     Optional<Long> findShowtimeIdById(@Param("id") Long id);
 
     @Query(value = "SELECT seat_id FROM tickets WHERE id = :id", nativeQuery = true)
     Optional<Long> findSeatIdById(@Param("id") Long id);
 
-    List<Ticket> findByUser_Username(String username);
 
     // If Ticket entity has ManyToOne Showtime showtime:
     List<Ticket> findByShowtime_DateTime(String showtimeDateTime); // If datetime is String
     List<Ticket> findByShowtime(Showtime showtime); // Find by Showtime entity
 
     // If Ticket entity has ManyToOne Seat seat:
-    List<Ticket> findBySeatId(Long seatId); // Find by Seat entity ID using Spring Data
+    List<Ticket> findBySeat_Id(Long seatId); // Find by Seat entity ID using Spring Data
 
     // Method for finding a ticket by Showtime and Seat number (for purchase validation)
     Optional<Ticket> findByShowtimeAndSeatNumber(Showtime showtime, String seatNumber);
@@ -57,6 +46,13 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     // Your original method to find by Showtime ID
     List<Ticket> findByShowtime_Id(Long showtimeId); // Keeping your method
 
-    @EntityGraph(attributePaths = {"showtime", "user", "seat", "showtime.movie", "showtime.theater"})
-    List<Ticket> findByUserId(Long userId);
+    List<Ticket> findByKeycloakUserId(String keycloakUserId);
+
+    @Query("""
+    SELECT t FROM Ticket t
+    JOIN FETCH t.showtime s
+    JOIN FETCH s.movie
+    WHERE t.keycloakUserId = :userId
+""")
+    List<Ticket> findMyTicketsWithMovie(@Param("userId") String userId);
 }
