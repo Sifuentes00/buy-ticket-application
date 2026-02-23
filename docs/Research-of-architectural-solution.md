@@ -1,6 +1,6 @@
 ### Тип приложения
 Разрабатываемая система является **клиент-серверным веб-приложением** с REST API.  
-Frontend — одностраничное приложение (SPA) на React, Backend — REST сервис на Spring Boot. Система использует централизованную аутентификацию через Keycloak.
+Frontend — многостраничное приложение на React, Backend — REST сервис на Spring Boot. Система использует централизованную аутентификацию через Keycloak.
 
 ### Стратегия развёртывания
 Система развёртывается в виде набора **Docker-контейнеров**:
@@ -17,7 +17,7 @@ Frontend — одностраничное приложение (SPA) на React,
 | Компонент | Технология | Обоснование |
 |------------|-----------|-------------|
 | Backend | Spring Boot | REST API, высокая поддержка безопасности, простота интеграции с базой данных, наличие готовых инструментов для тестирования и разработки |
-| Frontend | React + Vite | SPA с динамической загрузкой данных, быстрая разработка интерфейсов, поддержка современных UI-библиотек |
+| Frontend | React + Vite | MPA с динамической загрузкой данных, быстрая разработка интерфейсов, поддержка современных UI-библиотек |
 | Аутентификация | Keycloak | Централизованная авторизация и аутентификация, поддержка ролей и JWT, упрощение управления безопасностью |
 | База данных | PostgreSQL | Надёжная реляционная СУБД с поддержкой транзакций, сложных запросов и индексации данных |
 
@@ -25,7 +25,7 @@ Frontend — одностраничное приложение (SPA) на React,
 
 - **Масштабируемость**: возможность увеличивать количество экземпляров frontend и backend без изменений архитектуры  
 - **Безопасность**: централизованная аутентификация через Keycloak, поддержка ролей и токенов JWT  
-- **Производительность**: минимальная нагрузка на фронтенд (SPA), эффективные REST-запросы к backend  
+- **Производительность**: минимальная нагрузка на фронтенд, эффективные REST-запросы к backend  
 - **Поддерживаемость**: чёткое разделение слоёв Controller → Service → Repository → Entity  
 - **Расширяемость**: новые функциональные модули интегрируются через сервисный слой без изменения базовой структуры  
 
@@ -42,22 +42,35 @@ Frontend — одностраничное приложение (SPA) на React,
 
 **Controllers:**  
 - MovieController  
-- UserController  
-- AuthController  
+- ReviewController  
+- SeatController  
+- ShowtimeController
+- TheaterController
+- TicketController
 
 **Services:**  
 - MovieService  
-- UserService  
-- AuthService  
+- ReviewService  
+- SeatService 
+- ShowtimeService
+- TheaterService
+- TicketService
 
 **Repositories:**  
 - MovieRepository  
-- UserRepository  
+- ReviewRepository  
+- SeatRepository 
+- ShowtimeRepository 
+- TheaterRepository 
+- TicketRepository 
 
 **Entities:**  
-- Movie  
-- User  
-- Role  
+- Movie 
+- Review 
+- Seat
+- Showtime
+- Theater
+- Ticket
 
 **Other:**  
 - KeycloakIntegration (SecurityConfig, JWTFilter)  
