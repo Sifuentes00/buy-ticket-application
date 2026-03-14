@@ -49,5 +49,4 @@ public interface SeatRepository extends JpaRepository<Seat, Long> {
 
     Optional<Seat> findBySeatRowAndNumber(int seatRow, int number);
 
-    Optional<Seat> findByRowAndSeatNumberAndTheater_Id(int row, int seatNumber, Long id);
 }

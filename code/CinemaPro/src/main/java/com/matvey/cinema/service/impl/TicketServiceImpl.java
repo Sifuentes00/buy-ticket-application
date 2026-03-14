@@ -303,10 +303,9 @@ public class TicketServiceImpl implements TicketService {
         int seat = Integer.parseInt(matcher.group(2));
 
         Optional<Seat> seatOpt =
-                seatRepository.findByRowAndSeatNumberAndTheater_Id(
+                seatRepository.findBySeatRowAndNumber(
                         row,
-                        seat,
-                        showtime.getTheater().getId()
+                        seat
                 );
 
         if (seatOpt.isEmpty()) {
@@ -627,8 +626,7 @@ public class TicketServiceImpl implements TicketService {
             int seat = Integer.parseInt(matcher.group(2));
 
             Seat seatEntity = seatRepository
-                    .findByRowAndSeatNumberAndTheater_Id(row, seat,
-                            showtime.getTheater().getId())
+                    .findBySeatRowAndNumber(row, seat)
                     .orElseThrow(() ->
                             new RuntimeException("Seat not found: " + seatNumber));
 
@@ -668,35 +666,6 @@ public class TicketServiceImpl implements TicketService {
                 keycloakUserId, purchasedTickets.size());
 
         return purchasedTickets;
-    }
-
-    public Optional<Ticket> findByShowtimeAndSeatNumber(Long showtimeId, int row, int seatNumber) {
-
-        logger.debug("event=ticket_find_by_showtime_and_seat showtimeId={} row={} seat={}",
-                showtimeId, row, seatNumber);
-
-        Optional<Showtime> showtimeOpt = showtimeRepository.findById(showtimeId);
-
-        if (showtimeOpt.isEmpty()) {
-
-            logger.warn("event=showtime_not_found showtimeId={}", showtimeId);
-
-            return Optional.empty();
-        }
-
-        Optional<Seat> seatOpt =
-                seatRepository.findByRowAndSeatNumberAndTheater_Id(row, seatNumber,
-                        showtimeOpt.get().getTheater().getId());
-
-        if (seatOpt.isEmpty()) {
-
-            logger.warn("event=seat_not_found row={} seat={} showtimeId={}",
-                    row, seatNumber, showtimeId);
-
-            return Optional.empty();
-        }
-
-        return ticketRepository.findByShowtimeAndSeat(showtimeOpt.get(), seatOpt.get());
     }
 
     public Ticket mapTicketRequestToTicket(TicketRequest request) {
