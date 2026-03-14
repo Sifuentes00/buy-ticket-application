@@ -37,7 +37,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:21.1.1
-    command: start-dev
+    command: start-dev --import-realm
     ports:
       - "8080:8080"
     environment:
@@ -47,6 +47,7 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     volumes:
       - keycloak_data:/opt/keycloak/data
+      - ./keycloak/my-realm.json:/opt/keycloak/data/import/realm.json
 
   frontend:
     build:
