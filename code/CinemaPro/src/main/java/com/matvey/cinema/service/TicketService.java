@@ -29,9 +29,11 @@ public interface TicketService {
 
     void deleteTicket(Long id);
 
-    Ticket updateTicketFromRequest(Ticket existingTicket, TicketRequest ticketRequest);
+    Ticket updateTicketFromRequest(Ticket ticket, TicketRequest request);
 
     Ticket mapTicketRequestToTicket(TicketRequest ticketRequest);
 
     List<Ticket> purchaseTickets(PurchaseRequestDto purchaseRequest);
+
+
 }

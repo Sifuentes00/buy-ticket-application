@@ -4,7 +4,6 @@ import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.dto.MovieRequest;
 import com.matvey.cinema.model.entities.Movie;
 import com.matvey.cinema.service.MovieService;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,135 +23,88 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/movies")
-@Tag(name = "Movie Controller", description = "API для управления фильмами")
+@Tag(name="Movie Controller",description="API для управления фильмами")
 public class MovieController {
-
     private final MovieService movieService;
-    private static final Logger logger = LoggerFactory.getLogger(MovieController.class);
-
-    public MovieController(MovieService movieService) {
-        this.movieService = movieService;
+    private static final Logger logger=LoggerFactory.getLogger(MovieController.class);
+    public MovieController(MovieService movieService){
+        this.movieService=movieService;
     }
-
-    // ✅ Доступно всем
     @GetMapping("/{id}")
-    @Operation(summary = "Получить фильм по ID", description = "Возвращает фильм с указанным ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",
-                    description = "Фильм успешно получен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Movie.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "Фильм не найден", content = @Content)
+    @Operation(summary="Получить фильм по ID",description="Возвращает фильм с указанным ID")
+    @ApiResponses(value={
+            @ApiResponse(responseCode="200",description="Фильм успешно получен",content=@Content(mediaType="application/json",schema=@Schema(implementation=Movie.class))),
+            @ApiResponse(responseCode="404",description="Фильм не найден",content=@Content)
     })
-    public ResponseEntity<Movie> getMovieById(
-            @Parameter(description = "Идентификатор фильма", example = "1") @PathVariable Long id) {
-        logger.debug("Запрос на получение фильма с ID: {}", id);
-        Optional<Movie> movie = movieService.findById(id);
-        return movie.map(ResponseEntity::ok)
-                .orElseGet(() -> {
-                    logger.error("Фильм с ID {} не найден", id);
-                    return ResponseEntity.notFound().build();
-                });
+    public ResponseEntity<Movie> getMovieById(@Parameter(description="Идентификатор фильма",example="1")@PathVariable Long id){
+        logger.info("event=api_get_movie_start movieId={}",id);
+        Optional<Movie> movie=movieService.findById(id);
+        return movie.map(value->{
+            logger.info("event=api_get_movie_success movieId={}",id);
+            return ResponseEntity.ok(value);
+        }).orElseGet(()->{
+            logger.warn("event=api_get_movie_not_found movieId={}",id);
+            return ResponseEntity.notFound().build();
+        });
     }
-
-    // ✅ Доступно всем
     @GetMapping
-    @Operation(summary = "Получить все фильмы",
-            description = "Возвращает список всех фильмов в базе данных")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Список фильмов успешно получен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Movie.class)))
-    })
-    public ResponseEntity<List<Movie>> getAllMovies() {
-        logger.debug("Запрос на получение всех фильмов с отзывами");
-        List<Movie> movies = movieService.findAllWithReviews();
+    @Operation(summary="Получить все фильмы",description="Возвращает список всех фильмов")
+    public ResponseEntity<List<Movie>> getAllMovies(){
+        logger.info("event=api_get_all_movies_start");
+        List<Movie> movies=movieService.findAllWithReviews();
+        logger.info("event=api_get_all_movies_success count={}",movies.size());
         return ResponseEntity.ok(movies);
     }
-
-    // 🔒 Только админ
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
-    @Operation(summary = "Создать новый фильм",
-            description = "Создает новый фильм на основе предоставленных данных")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Фильм успешно создан",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Movie.class))),
-            @ApiResponse(responseCode = "400",
-                    description = "Неверные входные данные", content = @Content)
-    })
-    public ResponseEntity<Movie> createMovie(@Valid @RequestBody MovieRequest movieRequest) {
-        logger.debug("Запрос на создание нового фильма: {}", movieRequest);
-        try {
-            Movie createdMovie = movieService.createMovie(movieRequest);
-            logger.info("Фильм с ID: {} успешно создан.", createdMovie.getId());
+    @Operation(summary="Создать новый фильм",description="Создает новый фильм")
+    public ResponseEntity<Movie> createMovie(@Valid@RequestBody MovieRequest movieRequest){
+        logger.info("event=api_create_movie_start title={}",movieRequest.getTitle());
+        try{
+            Movie createdMovie=movieService.createMovie(movieRequest);
+            logger.info("event=api_create_movie_success movieId={}",createdMovie.getId());
             return ResponseEntity.status(HttpStatus.CREATED).body(createdMovie);
-        } catch (Exception e) {
-            logger.error("Ошибка при создании фильма:", e);
+        }catch(Exception e){
+            logger.error("event=api_create_movie_error title={}",movieRequest.getTitle(),e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    // 🔒 Только админ
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
-    @Operation(summary = "Обновить фильм",
-            description = "Обновляет существующий фильм с указанным ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Фильм успешно обновлен",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Movie.class))),
-            @ApiResponse(responseCode = "400", description = "Неверные входные данные", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Фильм не найден", content = @Content)
-    })
-    public ResponseEntity<Movie> updateMovie(
-            @Parameter(description = "Идентификатор фильма для обновления", example = "1") @PathVariable Long id,
-            @Valid @RequestBody MovieRequest movieRequest) {
-        logger.debug("Запрос на обновление фильма с ID: {}", id);
-        try {
-            Movie existingMovie = movieService.findById(id)
-                    .orElseThrow(() -> new CustomNotFoundException("Фильм не найден с ID: " + id));
-
+    @Operation(summary="Обновить фильм",description="Обновляет фильм")
+    public ResponseEntity<Movie> updateMovie(@Parameter(description="ID фильма",example="1")@PathVariable Long id,@Valid@RequestBody MovieRequest movieRequest){
+        logger.info("event=api_update_movie_start movieId={}",id);
+        try{
+            Movie existingMovie=movieService.findById(id).orElseThrow(()->new CustomNotFoundException("Фильм не найден с ID: "+id));
             existingMovie.setTitle(movieRequest.getTitle());
             existingMovie.setDirector(movieRequest.getDirector());
             existingMovie.setReleaseYear(movieRequest.getReleaseYear());
             existingMovie.setGenre(movieRequest.getGenre());
-
-            Movie updatedMovie = movieService.save(existingMovie);
-            logger.info("Фильм с ID: {} успешно обновлен.", id);
+            Movie updatedMovie=movieService.save(existingMovie);
+            logger.info("event=api_update_movie_success movieId={}",id);
             return ResponseEntity.ok(updatedMovie);
-
-        } catch (CustomNotFoundException e) {
-            logger.error("Фильм с ID {} не найден для обновления", id);
+        }catch(CustomNotFoundException e){
+            logger.warn("event=api_update_movie_not_found movieId={}",id);
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            logger.error("Ошибка при обновлении фильма с ID {}:", id, e);
+        }catch(Exception e){
+            logger.error("event=api_update_movie_error movieId={}",id,e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
-    // 🔒 Только админ
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    @Operation(summary = "Удалить фильм", description = "Удаляет фильм с указанным ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "Фильм успешно удален", content = @Content),
-            @ApiResponse(responseCode = "404", description = "Фильм не найден", content = @Content)
-    })
-    public ResponseEntity<Void> deleteMovie(
-            @Parameter(description = "Идентификатор фильма для удаления", example = "1") @PathVariable Long id) {
-        logger.debug("Запрос на удаление фильма с ID: {}", id);
-        try {
+    @Operation(summary="Удалить фильм",description="Удаляет фильм")
+    public ResponseEntity<Void> deleteMovie(@Parameter(description="ID фильма",example="1")@PathVariable Long id){
+        logger.info("event=api_delete_movie_start movieId={}",id);
+        try{
             movieService.deleteById(id);
-            logger.info("Фильм с ID: {} успешно удален.", id);
+            logger.info("event=api_delete_movie_success movieId={}",id);
             return ResponseEntity.noContent().build();
-        } catch (CustomNotFoundException e) {
-            logger.error("Фильм с ID {} не найден для удаления", id);
+        }catch(CustomNotFoundException e){
+            logger.warn("event=api_delete_movie_not_found movieId={}",id);
             return ResponseEntity.notFound().build();
-        } catch (Exception e) {
-            logger.error("Ошибка при удалении фильма с ID {}:", id, e);
+        }catch(Exception e){
+            logger.error("event=api_delete_movie_error movieId={}",id,e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }

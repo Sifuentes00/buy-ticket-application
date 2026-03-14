@@ -1,0 +1,73 @@
+<configuration>
+
+    <!-- CONSOLE -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- ELK -->
+    <appender name="LOGSTASH"
+              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+
+        <destination>localhost:5000</destination>
+
+        <encoder
+                class="net.logstash.logback.encoder.LogstashEncoder"/>
+    </appender>
+
+    <!-- Логи Seat → только консоль -->
+    <logger name="com.matvey.cinema.service.impl.SeatServiceImpl"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+
+    </logger>
+
+    <logger name="com.matvey.cinema.controllers.SeatController"
+            level="INFO"
+            additivity="false">
+
+        <appender-ref ref="CONSOLE"/>
+
+    </logger>
+
+    <!-- Логи Seat → только консоль -->
+    <logger name="com.matvey.cinema.service.impl.SeatServiceImpl"
+            level="INFO"
+            additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="com.matvey.cinema.controllers.SeatController"
+            level="INFO"
+            additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Логи Theater → только консоль -->
+    <logger name="com.matvey.cinema.service.impl.TheaterServiceImpl"
+            level="INFO"
+            additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <logger name="com.matvey.cinema.controllers.TheaterController"
+            level="INFO"
+            additivity="false">
+        <appender-ref ref="CONSOLE"/>
+    </logger>
+
+    <!-- Основные логи приложения -->
+    <root level="INFO">
+
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="LOGSTASH"/>
+
+    </root>
+
+</configuration>

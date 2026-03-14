@@ -11,212 +11,187 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.matvey.cinema.exception.CustomNotFoundException;
 import com.matvey.cinema.model.dto.MovieRequest;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class MovieServiceImpl implements MovieService {
-
-    private static final Logger logger = LoggerFactory.getLogger(MovieServiceImpl.class);
-
+    private static final Logger logger=LoggerFactory.getLogger(MovieServiceImpl.class);
     private final MovieRepository movieRepository;
     private final InMemoryCache cache;
-
     @Autowired
-    public MovieServiceImpl(MovieRepository movieRepository, InMemoryCache cache) {
-        this.movieRepository = movieRepository;
-        this.cache = cache;
+    public MovieServiceImpl(MovieRepository movieRepository,InMemoryCache cache){
+        this.movieRepository=movieRepository;
+        this.cache=cache;
     }
-
     @Override
-    @Transactional(readOnly = true)
-    public Optional<Movie> findById(Long id) {
-        String cacheKey = "movie::id:" + id;
-        logger.info("Finding movie by ID: {}", id);
-
-        Optional<Object> cachedData = cache.get(cacheKey);
-        if (cachedData.isPresent()) {
-            logger.info("Movie ID: {} found in cache.", id);
-            Object data = cachedData.get();
-            if (data instanceof Movie) {
-                return Optional.of((Movie) data);
-            } else {
+    @Transactional(readOnly=true)
+    public Optional<Movie> findById(Long id){
+        String cacheKey="movie::id:"+id;
+        logger.info("event=movie_find_by_id_start movieId={}",id);
+        Optional<Object> cachedData=cache.get(cacheKey);
+        if(cachedData.isPresent()){
+            logger.debug("event=cache_hit cacheKey={}",cacheKey);
+            Object data=cachedData.get();
+            if(data instanceof Movie){
+                logger.info("event=movie_find_by_id_cache_success movieId={}",id);
+                return Optional.of((Movie)data);
+            }else{
                 cache.evict(cacheKey);
-                logger.warn("Incorrect data type in cache for key: {}", cacheKey);
+                logger.warn("event=cache_invalid_type cacheKey={}",cacheKey);
             }
         }
-
-        Optional<Movie> movie = movieRepository.findById(id);
-        if (movie.isEmpty()) {
-            logger.warn("Movie with ID: {} not found.", id);
+        Optional<Movie> movie=movieRepository.findById(id);
+        if(movie.isEmpty()){
+            logger.warn("event=movie_not_found movieId={}",id);
             return Optional.empty();
         }
-
-        movie.ifPresent(value -> {
-            cache.put(cacheKey, value);
-            logger.info("Movie with ID: {} added to cache.", id);
+        movie.ifPresent(value->{
+            cache.put(cacheKey,value);
+            logger.debug("event=cache_put cacheKey={} movieId={}",cacheKey,id);
         });
+        logger.info("event=movie_find_by_id_success movieId={}",id);
         return movie;
     }
-
     @Override
-    @Transactional(readOnly = true)
-    public List<Movie> findAll() {
-        String cacheKey = "movie::all";
-        logger.info("Finding all movies.");
-
-        Optional<Object> cachedData = cache.get(cacheKey);
-        if (cachedData.isPresent()) {
-            logger.info("All movies found in cache.");
-            Object data = cachedData.get();
-            if (data instanceof List) {
-                List<?> list = (List<?>) data;
-                if (!list.isEmpty() && list.get(0) instanceof Movie) {
-                    return (List<Movie>) data;
-                } else if (list.isEmpty()) {
-                    return (List<Movie>) data;
+    @Transactional(readOnly=true)
+    public List<Movie> findAll(){
+        String cacheKey="movie::all";
+        logger.info("event=movie_find_all_start");
+        Optional<Object> cachedData=cache.get(cacheKey);
+        if(cachedData.isPresent()){
+            logger.debug("event=cache_hit cacheKey={}",cacheKey);
+            Object data=cachedData.get();
+            if(data instanceof List){
+                List<?> list=(List<?>)data;
+                if(!list.isEmpty()&&list.get(0) instanceof Movie){
+                    logger.info("event=movie_find_all_cache_success");
+                    return (List<Movie>)data;
+                }else if(list.isEmpty()){
+                    return (List<Movie>)data;
                 }
             }
             cache.evict(cacheKey);
-            logger.warn("Incorrect data type in cache for key: {}", cacheKey);
+            logger.warn("event=cache_invalid_type cacheKey={}",cacheKey);
         }
-
-        List<Movie> movies = movieRepository.findAll();
-        cache.put(cacheKey, movies);
-        logger.info("All movies added to cache.");
+        List<Movie> movies=movieRepository.findAll();
+        cache.put(cacheKey,movies);
+        logger.debug("event=cache_put cacheKey={}",cacheKey);
+        logger.info("event=movie_find_all_success count={}",movies.size());
         return movies;
     }
-
     @Override
     @Transactional
-    public Movie save(Movie movie) {
-        logger.info("Saving movie with ID: {}", movie.getId());
-        Movie savedMovie = movieRepository.save(movie);
-        logger.info("Movie successfully saved with ID: {}", savedMovie.getId());
-
-        // Очистка кеша
+    public Movie save(Movie movie){
+        logger.info("event=movie_save_start movieId={}",movie.getId());
+        Movie savedMovie=movieRepository.save(movie);
+        logger.info("event=movie_saved movieId={}",savedMovie.getId());
         cache.evict("movie::all");
-        if (savedMovie.getId() != null) {
-            cache.evict("movie::id:" + savedMovie.getId());
+        if(savedMovie.getId()!=null){
+            cache.evict("movie::id:"+savedMovie.getId());
         }
         cache.evict("movie::all_with_reviews");
-
+        logger.debug("event=movie_cache_evicted movieId={}",savedMovie.getId());
         return savedMovie;
     }
-
     @Override
     @Transactional
-    public void deleteById(Long id) {
-        logger.info("Deleting movie with ID: {}", id);
-        Optional<Movie> movieOptional = movieRepository.findById(id);
-        if (movieOptional.isPresent()) {
-            Movie movie = movieOptional.get();
-
-            // Очистка кеша связанных данных.  Важно делать это ДО удаления из репозитория.
+    public void deleteById(Long id){
+        logger.info("event=movie_delete_start movieId={}",id);
+        Optional<Movie> movieOptional=movieRepository.findById(id);
+        if(movieOptional.isPresent()){
+            Movie movie=movieOptional.get();
             evictRelatedCache(movie);
-
-            movieRepository.deleteById(id); //  Удаляем фильм ПОСЛЕ очистки кеша.
-            logger.info("Movie with ID: {} successfully deleted.", id);
-        } else {
-            logger.warn("Movie with ID: {} not found for deletion.", id);
-            throw new CustomNotFoundException("Movie not found with ID: " + id); // Используем CustomNotFoundException
+            movieRepository.deleteById(id);
+            logger.info("event=movie_deleted movieId={}",id);
+        }else{
+            logger.warn("event=movie_delete_not_found movieId={}",id);
+            throw new CustomNotFoundException("Movie not found with ID: "+id);
         }
     }
-
-    private void evictRelatedCache(Movie movie) {
-        // Очистка кеша связанных отзывов
-        if (movie.getReviews() != null) {
-            movie.getReviews().forEach(review -> {
-                String reviewCacheKey = "review::id:" + review.getId();
+    private void evictRelatedCache(Movie movie){
+        if(movie.getReviews()!=null){
+            movie.getReviews().forEach(review->{
+                String reviewCacheKey="review::id:"+review.getId();
                 cache.evict(reviewCacheKey);
-                logger.debug("Evicted review: {}", reviewCacheKey);
+                logger.debug("event=cache_evict reviewId={} cacheKey={}",review.getId(),reviewCacheKey);
             });
         }
-        // Очистка кеша связанных сеансов и их билетов
-        if (movie.getShowtimes() != null) {
-            movie.getShowtimes().forEach(showtime -> {
-                String showtimeCacheKey = "showtime::id:" + showtime.getId();
+        if(movie.getShowtimes()!=null){
+            movie.getShowtimes().forEach(showtime->{
+                String showtimeCacheKey="showtime::id:"+showtime.getId();
                 cache.evict(showtimeCacheKey);
-                logger.debug("Evicted showtime: {}", showtimeCacheKey);
-                if (showtime.getTickets() != null) {
-                    showtime.getTickets().forEach(ticket -> {
-                        String ticketCacheKey = "ticket::id:" + ticket.getId();
+                logger.debug("event=cache_evict showtimeId={} cacheKey={}",showtime.getId(),showtimeCacheKey);
+                if(showtime.getTickets()!=null){
+                    showtime.getTickets().forEach(ticket->{
+                        String ticketCacheKey="ticket::id:"+ticket.getId();
                         cache.evict(ticketCacheKey);
-                        logger.debug("Evicted ticket: {}", ticketCacheKey);
+                        logger.debug("event=cache_evict ticketId={} cacheKey={}",ticket.getId(),ticketCacheKey);
                     });
                 }
             });
         }
-
-        // Очистка кеша самого фильма и списков фильмов
-        cache.evict("movie::id:" + movie.getId());
+        cache.evict("movie::id:"+movie.getId());
         cache.evict("movie::all");
         cache.evict("movie::all_with_reviews");
-        logger.debug("Evicted movie and movie lists from cache.");
+        logger.debug("event=movie_cache_evicted movieId={}",movie.getId());
     }
-
-
     @Override
-    @Transactional(readOnly = true)
-    public List<Movie> findAllWithReviews() {
-        String cacheKey = "movie::all_with_reviews";
-        logger.info("Finding all movies with reviews");
-
-        Optional<Object> cachedData = cache.get(cacheKey);
-        if (cachedData.isPresent()) {
-            logger.info("All movies with reviews found in cache.");
-            Object data = cachedData.get();
-            if (data instanceof List) {
-                List<?> list = (List<?>) data;
-                if (!list.isEmpty() && list.get(0) instanceof Movie) {
-                    return (List<Movie>) data;
-                } else if (list.isEmpty()) {
-                    return (List<Movie>) data;
+    @Transactional(readOnly=true)
+    public List<Movie> findAllWithReviews(){
+        String cacheKey="movie::all_with_reviews";
+        logger.info("event=movie_find_all_with_reviews_start");
+        Optional<Object> cachedData=cache.get(cacheKey);
+        if(cachedData.isPresent()){
+            logger.debug("event=cache_hit cacheKey={}",cacheKey);
+            Object data=cachedData.get();
+            if(data instanceof List){
+                List<?> list=(List<?>)data;
+                if(!list.isEmpty()&&list.get(0) instanceof Movie){
+                    logger.info("event=movie_find_all_with_reviews_cache_success");
+                    return (List<Movie>)data;
+                }else if(list.isEmpty()){
+                    return (List<Movie>)data;
                 }
             }
             cache.evict(cacheKey);
-            logger.warn("Incorrect data type in cache for key: {}", cacheKey);
+            logger.warn("event=cache_invalid_type cacheKey={}",cacheKey);
         }
-        List<Movie> movies = movieRepository.findAllWithReviews();
-        cache.put(cacheKey, movies);
-        logger.info("All movies with reviews added to cache.");
+        List<Movie> movies=movieRepository.findAllWithReviews();
+        cache.put(cacheKey,movies);
+        logger.debug("event=cache_put cacheKey={}",cacheKey);
+        logger.info("event=movie_find_all_with_reviews_success count={}",movies.size());
         return movies;
     }
-
     @Override
     @Transactional
-    public Movie createMovie(MovieRequest movieRequest) {
-        logger.info("Creating movie from MovieRequest: {}", movieRequest.getTitle());
-        Movie newMovie = new Movie();
+    public Movie createMovie(MovieRequest movieRequest){
+        logger.info("event=movie_create_start title={}",movieRequest.getTitle());
+        Movie newMovie=new Movie();
         newMovie.setTitle(movieRequest.getTitle());
         newMovie.setDirector(movieRequest.getDirector());
         newMovie.setReleaseYear(movieRequest.getReleaseYear());
         newMovie.setGenre(movieRequest.getGenre());
-        Movie savedMovie = save(newMovie);
-        logger.info("Movie with ID '{}' successfully created and saved.", savedMovie.getId());
+        Movie savedMovie=save(newMovie);
+        logger.info("event=movie_created movieId={} title={}",savedMovie.getId(),savedMovie.getTitle());
         return savedMovie;
     }
-
     @Override
-    public void evictMovieCache(Long movieId) {
-        String cacheKey = "movie::id:" + movieId;
+    public void evictMovieCache(Long movieId){
+        String cacheKey="movie::id:"+movieId;
         cache.evict(cacheKey);
-        logger.debug("Evicted movie cache for ID: {}", movieId);
+        logger.debug("event=cache_evict movieId={} cacheKey={}",movieId,cacheKey);
     }
-
     @Override
-    public void evictAllMoviesCache() {
-        String cacheKey = "movie::all";
+    public void evictAllMoviesCache(){
+        String cacheKey="movie::all";
         cache.evict(cacheKey);
-        logger.debug("Evicted all movies cache.");
+        logger.debug("event=cache_evict cacheKey={}",cacheKey);
     }
-
     @Override
-    public void evictAllMoviesWithReviewsCache() {
-        String cacheKey = "movie::all_with_reviews";
+    public void evictAllMoviesWithReviewsCache(){
+        String cacheKey="movie::all_with_reviews";
         cache.evict(cacheKey);
-        logger.debug("Evicted all movies with reviews cache.");
+        logger.debug("event=cache_evict cacheKey={}",cacheKey);
     }
 }
-

@@ -21,18 +21,22 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@Tag(name = "Showtime Controller", description = "API для управления сеансами")
 @RequestMapping("/api/showtimes")
+@Tag(name = "Showtime Controller", description = "API для управления сеансами")
 public class ShowtimeController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ShowtimeController.class);
+
     private final ShowtimeService showtimeService;
     private final MovieService movieService;
     private final TheaterService theaterService;
     private final TicketService ticketService;
     private final ShowtimeRepository showtimeRepository;
-    private static final Logger logger = LoggerFactory.getLogger(ShowtimeController.class);
 
-    public ShowtimeController(ShowtimeService showtimeService, MovieService movieService,
-                              TheaterService theaterService, TicketService ticketService,
+    public ShowtimeController(ShowtimeService showtimeService,
+                              MovieService movieService,
+                              TheaterService theaterService,
+                              TicketService ticketService,
                               ShowtimeRepository showtimeRepository) {
         this.showtimeService = showtimeService;
         this.movieService = movieService;
@@ -41,42 +45,38 @@ public class ShowtimeController {
         this.showtimeRepository = showtimeRepository;
     }
 
-    // ========== 👀 ПРОСМОТР — ДОСТУПЕН ВСЕМ ==========
-
     @GetMapping("/{id}")
     @PreAuthorize("permitAll()")
     @Operation(summary = "Получить сеанс по ID", description = "Возвращает сеанс с указанным ID")
     public ResponseEntity<Showtime> getShowtimeById(
             @Parameter(description = "Идентификатор сеанса", example = "1") @PathVariable Long id) {
-        logger.debug("Запрос на получение сеанса с ID: {}", id);
+        logger.debug("showtime.getById start id={}", id);
         Optional<Showtime> showtime = showtimeService.findById(id);
         return showtime.map(ResponseEntity::ok)
                 .orElseGet(() -> {
-                    logger.error("Сеанс с ID {} не найден", id);
+                    logger.warn("showtime.notFound id={}", id);
                     return ResponseEntity.notFound().build();
                 });
     }
 
     @GetMapping
     @PreAuthorize("permitAll()")
-    @Operation(summary = "Получить все сеансы",
-            description = "Возвращает список всех сеансов в базе данных")
+    @Operation(summary = "Получить все сеансы", description = "Возвращает список всех сеансов")
     public ResponseEntity<List<Showtime>> getAllShowtimes() {
-        logger.debug("Запрос на получение всех сеансов");
+        logger.debug("showtime.getAll start");
         List<Showtime> showtimes = showtimeService.findAll();
+        logger.info("showtime.getAll success count={}", showtimes.size());
         return ResponseEntity.ok(showtimes);
     }
 
     @GetMapping("/theater")
     @PreAuthorize("permitAll()")
-    @Operation(summary = "Получить сеансы по названию театра",
-            description = "Возвращает список сеансов для указанного театра")
-    public ResponseEntity<List<Showtime>> getShowtimesByTheaterName(
-            @RequestParam String theaterName) {
-        logger.debug("Запрос на получение сеансов для театра");
+    @Operation(summary = "Получить сеансы по названию театра", description = "Список сеансов для театра")
+    public ResponseEntity<List<Showtime>> getShowtimesByTheaterName(@RequestParam String theaterName) {
+        logger.debug("showtime.getByTheater start theater={}", theaterName);
         List<Showtime> showtimes = showtimeService.findShowtimesByTheaterName(theaterName);
         if (showtimes.isEmpty()) {
-            logger.warn("Сеансы для театра не найдены");
+            logger.warn("showtime.notFound.theater theater={}", theaterName);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtimes);
@@ -84,14 +84,12 @@ public class ShowtimeController {
 
     @GetMapping("/movie")
     @PreAuthorize("permitAll()")
-    @Operation(summary = "Получить сеансы по названию фильма",
-            description = "Возвращает список сеансов для указанного фильма")
-    public ResponseEntity<List<Showtime>> getShowtimesByMovieTitle(
-            @RequestParam String movieTitle) {
-        logger.debug("Запрос на получение сеансов для фильма");
+    @Operation(summary = "Получить сеансы по названию фильма", description = "Список сеансов для фильма")
+    public ResponseEntity<List<Showtime>> getShowtimesByMovieTitle(@RequestParam String movieTitle) {
+        logger.debug("showtime.getByMovieTitle start title={}", movieTitle);
         List<Showtime> showtimes = showtimeService.findShowtimesByMovieTitle(movieTitle);
         if (showtimes.isEmpty()) {
-            logger.warn("Сеансы для фильма не найдены");
+            logger.warn("showtime.notFound.movieTitle title={}", movieTitle);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(showtimes);
@@ -99,80 +97,59 @@ public class ShowtimeController {
 
     @GetMapping("/movie/{movieId}")
     @PreAuthorize("permitAll()")
-    @Operation(summary = "Получить сеансы по ID фильма",
-            description = "Возвращает список сеансов для фильма с указанным ID")
+    @Operation(summary = "Получить сеансы по ID фильма", description = "Список сеансов по ID фильма")
     public ResponseEntity<List<Showtime>> getShowtimesByMovieId(
-            @Parameter(description = "Идентификатор фильма", example = "1")
-            @PathVariable Long movieId) {
-
-        logger.debug("Запрос на получение сеансов для фильма с ID: {}", movieId);
-
+            @Parameter(description = "ID фильма", example = "1") @PathVariable Long movieId) {
+        logger.debug("showtime.getByMovieId start movieId={}", movieId);
         List<Showtime> showtimes = showtimeService.findShowtimesByMovieId(movieId);
-
-        if (showtimes == null || showtimes.isEmpty()) {
-            logger.warn("Сеансы для фильма с ID {} не найдены", movieId);
+        if (showtimes.isEmpty()) {
+            logger.warn("showtime.notFound.movieId movieId={}", movieId);
             return ResponseEntity.ok(List.of());
         }
-
-        logger.info("Найдено {} сеансов для фильма с ID {}", showtimes.size(), movieId);
+        logger.info("showtime.getByMovieId success movieId={} count={}", movieId, showtimes.size());
         return ResponseEntity.ok(showtimes);
     }
 
-
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Создать новый сеанс",
-            description = "Создает новый сеанс на основе предоставленных данных")
-    public ResponseEntity<Showtime> createShowtime(@Valid @RequestBody ShowtimeRequest
-                                                           showtimeRequest) {
-        logger.debug("Запрос на создание нового сеанса: {}", showtimeRequest);
+    @Operation(summary = "Создать сеанс", description = "Создает новый сеанс")
+    public ResponseEntity<Showtime> createShowtime(@Valid @RequestBody ShowtimeRequest showtimeRequest) {
+        logger.debug("showtime.create start request={}", showtimeRequest);
         Showtime showtime = new Showtime();
-
         showtimeRepository.updateShowtimeDetails(showtime, showtimeRequest,
                 movieService, theaterService, ticketService);
-
-        Showtime savedShowtime = showtimeService.save(showtime);
-        logger.info("Сеанс успешно создан с ID: {}", savedShowtime.getId());
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedShowtime);
+        Showtime saved = showtimeService.save(showtime);
+        logger.info("showtime.create success id={}", saved.getId());
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Обновить сеанс",
-            description = "Обновляет существующий сеанс с указанным ID")
-    public ResponseEntity<Showtime> updateShowtimeWithMovieAndTheater(
-            @Parameter(description = "Идентификатор сеанса для обновления",
-                    example = "1") @PathVariable Long id,
+    @Operation(summary = "Обновить сеанс", description = "Обновляет существующий сеанс")
+    public ResponseEntity<Showtime> updateShowtime(
+            @Parameter(description = "ID сеанса", example = "1") @PathVariable Long id,
             @Valid @RequestBody ShowtimeRequest showtimeRequest) {
-
-        logger.debug("Запрос на обновление сеанса с ID: {}", id);
-
-        Showtime existingShowtime = showtimeService.findById(id)
+        logger.debug("showtime.update start id={}", id);
+        Showtime existing = showtimeService.findById(id)
                 .orElseThrow(() -> {
-                    logger.error("Сеанс не найден с ID: {}", id);
+                    logger.warn("showtime.notFound id={}", id);
                     return new RuntimeException("Сеанс не найден с ID: " + id);
                 });
-
-        showtimeRepository.updateShowtimeDetails(existingShowtime, showtimeRequest,
+        showtimeRepository.updateShowtimeDetails(existing, showtimeRequest,
                 movieService, theaterService, ticketService);
-
-        Showtime updatedShowtime = showtimeService.save(existingShowtime);
-        logger.info("Сеанс с ID: {} успешно обновлен", id);
-
-        return ResponseEntity.ok(updatedShowtime);
+        Showtime updated = showtimeService.save(existing);
+        logger.info("showtime.update success id={}", id);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Удалить сеанс", description = "Удаляет сеанс с указанным ID")
+    @Operation(summary = "Удалить сеанс", description = "Удаляет сеанс по ID")
     public ResponseEntity<Void> deleteShowtime(
-            @Parameter(description = "Идентификатор сеанса для удаления",
-                    example = "1") @PathVariable Long id) {
-
-        logger.debug("Запрос на удаление сеанса с ID: {}", id);
+            @Parameter(description = "ID сеанса", example = "1") @PathVariable Long id) {
+        logger.debug("showtime.delete start id={}", id);
         showtimeService.deleteById(id);
-        logger.info("Сеанс с ID: {} успешно удален", id);
+        logger.info("showtime.delete success id={}", id);
         return ResponseEntity.noContent().build();
     }
 }

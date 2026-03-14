@@ -2,6 +2,8 @@ package com.matvey.cinema.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,5 +96,9 @@ public class Showtime {
 
     public void addTicket(Ticket ticket) {
         tickets.add(ticket);
+    }
+
+    public BigDecimal getPrice() {
+        return null;
     }
 }

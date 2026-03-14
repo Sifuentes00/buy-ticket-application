@@ -55,4 +55,8 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     WHERE t.keycloakUserId = :userId
 """)
     List<Ticket> findMyTicketsWithMovie(@Param("userId") String userId);
+
+    Optional<Ticket> findByShowtimeAndSeat(Showtime showtime, Seat seat);
+
+    List<Ticket> findByShowtimeId(Long showtimeId);
 }
