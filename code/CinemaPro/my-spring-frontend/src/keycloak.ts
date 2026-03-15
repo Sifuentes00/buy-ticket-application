@@ -1,3 +1,4 @@
+// @ts-ignore
 import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({

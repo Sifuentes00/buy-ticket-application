@@ -74,8 +74,8 @@ interface MyTicketsPageProps {
     currentUser: AuthUser;
 }
 
-const TICKETS_API_URL = 'http://localhost:8081/api/tickets';
-const USER_TICKETS_API_URL = `${TICKETS_API_URL}/my`;
+const TICKETS_API_URL = '/tickets';
+const USER_TICKETS_API_URL = '/tickets/my';
 
 function MyTicketsPage({ currentUser }: MyTicketsPageProps) {
     const [tickets, setTickets] = useState<Ticket[]>([]);
@@ -91,22 +91,14 @@ function MyTicketsPage({ currentUser }: MyTicketsPageProps) {
         setLoading(true);
         setError(null);
         try {
-            const timestamp = Date.now();
-            const url = `${USER_TICKETS_API_URL}?_t=${timestamp}`;
-
-            console.log(`[fetchTickets] GET: ${url}`);
-
-            const response = await apiGet<Ticket[]>(url);
-
+            const response = await apiGet<Ticket[]>(`${USER_TICKETS_API_URL}?_t=${Date.now()}`);
             if (response.status >= 200 && response.status < 300) {
                 setTickets(response.data || []);
             } else {
                 setError(`Ошибка при загрузке билетов: Статус ${response.status}`);
             }
         } catch (err: any) {
-            console.error("Ошибка при загрузке билетов:", err.response?.data || err.message || err);
-            const errorMessage = err.response?.data?.message || err.message || "Неизвестная ошибка";
-            setError(`Не удалось загрузить билеты: ${errorMessage}`);
+            setError(`Не удалось загрузить билеты: ${err.message}`);
         } finally {
             setLoading(false);
         }
@@ -209,25 +201,18 @@ function MyTicketsPage({ currentUser }: MyTicketsPageProps) {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            <Typography variant="h4" component="h1" gutterBottom>
+        <Container maxWidth="lg" sx={{ mt: { xs: 2, md: 4 }, mb: 4, px: { xs: 0, sm: 2 } }}>
+            <Typography variant="h4" component="h1" gutterBottom sx={{ fontSize: { xs: '1.8rem', md: '2.125rem' }, px: { xs: 2, sm: 0 } }}>
                 Мои билеты
             </Typography>
 
-            {error && !openDialog && (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                    {error}
-                </Alert>
-            )}
+            {error && !openDialog && <Alert severity="error" sx={{ mb: 2, mx: { xs: 2, sm: 0 } }}>{error}</Alert>}
 
             {loading && !openDialog ? (
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                    <CircularProgress />
-                </Box>
-            ) : (
-                tickets.length > 0 ? (
-                    <TableContainer component={Paper}>
-                        <Table sx={{ minWidth: 650 }} aria-label="my tickets table">
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}><CircularProgress /></Box>
+            ) : tickets.length > 0 ? (
+                <TableContainer component={Paper} sx={{ overflowX: 'auto', borderRadius: { xs: 0, sm: 1 } }}>
+                    <Table sx={{ minWidth: { xs: 500, md: 650 } }} aria-label="my tickets table">
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center">Фильм</TableCell>
@@ -277,14 +262,13 @@ function MyTicketsPage({ currentUser }: MyTicketsPageProps) {
                                     </TableRow>
                                 ))}
                             </TableBody>
-                        </Table>
-                    </TableContainer>
-                ) : (
-                    !loading && !error && (
-                        <Typography variant="body1" align="center" sx={{ mt: 4 }}>
-                            У вас пока нет купленных билетов.
-                        </Typography>
-                    )
+                    </Table>
+                </TableContainer>
+            ) : (
+                !loading && !error && (
+                    <Typography variant="body1" align="center" sx={{ mt: 4 }}>
+                        У вас пока нет купленных билетов.
+                    </Typography>
                 )
             )}
 

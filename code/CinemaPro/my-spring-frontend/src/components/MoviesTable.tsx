@@ -473,9 +473,11 @@ function MoviesTable() {
                     boxShadow: 3,
                     backgroundColor: tableBgColor,
                     color: textColor,
+                    overflowX: 'auto',
+                    borderRadius: { xs: 0, sm: 1 }
                 }}
             >
-                <Table sx={{ minWidth: 650 }} aria-label="movies table">
+                <Table sx={{ minWidth: { xs: 600, md: 650 } }} aria-label="movies table">
                     <TableHead sx={{ backgroundColor: '#424242' }}>
                         <TableRow>
                             {/* === Ячейки заголовков данных === */}
