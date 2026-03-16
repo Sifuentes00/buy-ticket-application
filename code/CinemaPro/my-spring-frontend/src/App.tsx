@@ -7,33 +7,28 @@ import MoviesTable from './components/MoviesTable';
 import UserProfile from './components/UserProfile';
 import MovieDetailsPage from './components/MovieDetailsPage';
 import MyTicketsPage from './components/MyTicketsPage';
+import MyFavoritesPage from './components/MyFavoritesPage';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 // Material UI
 import {
-    Container,
-    Typography,
-    Box,
-    Button,
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    TextField,
-    CircularProgress,
-    IconButton,
-    AppBar,
-    Toolbar,
-    useTheme
+    Container, Typography, Box, Button, Dialog, DialogTitle,
+    DialogContent, DialogActions, TextField, CircularProgress,
+    IconButton, AppBar, Toolbar, useTheme, Drawer, List,
+    ListItem, ListItemIcon, ListItemText, Divider, ListItemButton
 } from '@mui/material';
 import HomeIcon from '@mui/icons-material/Home';
+import MenuIcon from '@mui/icons-material/Menu';
+import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
+import LoginIcon from '@mui/icons-material/Login';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import type { AuthUser, UserFormData } from './types';
 
 interface AppProps {
     keycloak: Keycloak;
 }
-
-// 🔽 В САМОМ ВЕРХУ ФАЙЛА (после импортов)
 
 interface KeycloakTokenExtended {
     sub?: string;
@@ -44,21 +39,22 @@ interface KeycloakTokenExtended {
     };
 }
 
-// --- App Component ---
 function App({ keycloak }: AppProps) {
 
     const navigate = useNavigate();
     const theme = useTheme();
 
-    // --- State ---
     const [currentUser, setCurrentUser] = useState<AuthUser>(null);
     const [dialogType, setDialogType] = useState<'none' | 'login' | 'register'>('none');
     const [formData, setFormData] = useState<UserFormData>({ username: '', email: '', password: '' });
     const [isSubmitting, setIsSubmitting] = useState(false);
+
     const [formError, setFormError] = useState<string | null>(null);
     const [usernameError, setUsernameError] = useState<string | null>(null);
     const [emailError, setEmailError] = useState<string | null>(null);
     const [passwordError, setPasswordError] = useState<string | null>(null);
+
+    const [mobileOpen, setMobileOpen] = useState(false);
 
     useEffect(() => {
         if (keycloak.authenticated && keycloak.tokenParsed) {
@@ -80,6 +76,9 @@ function App({ keycloak }: AppProps) {
         }
     }, [keycloak.authenticated, keycloak.tokenParsed]);
 
+    const handleDrawerToggle = () => {
+        setMobileOpen(!mobileOpen);
+    };
 
     const handleCloseDialog = () => {
         setDialogType('none');
@@ -149,7 +148,7 @@ function App({ keycloak }: AppProps) {
         }
     };
 
-    // --- Logout (через Keycloak) ---
+
     const handleLogout = async () => {
         try {
             await keycloak.logout();
@@ -163,25 +162,90 @@ function App({ keycloak }: AppProps) {
         navigate('/');
     };
 
+    const drawerContent = (
+        <Box sx={{ textAlign: 'center', bgcolor: '#242424', height: '100%', color: 'white' }}>
+            <Typography variant="h6" sx={{ my: 2, fontWeight: 'bold' }}>
+                CinemaPro
+            </Typography>
+            <Divider sx={{ bgcolor: '#424242' }} />
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={() => { navigate('/'); handleDrawerToggle(); }}>
+                        <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
+                        <ListItemText primary="Главная" />
+                    </ListItemButton>
+                </ListItem>
+
+                {currentUser ? (
+                    <>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => { navigate('/my-tickets'); handleDrawerToggle(); }}>
+                                <ListItemIcon><ConfirmationNumberIcon sx={{ color: 'white' }}/></ListItemIcon>
+                                <ListItemText primary="Мои билеты" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        {/* ДОБАВЛЕН ПУНКТ ИЗБРАННОЕ */}
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => { navigate('/favorites'); handleDrawerToggle(); }}>
+                                <ListItemIcon><FavoriteIcon sx={{ color: '#ff4081' }}/></ListItemIcon>
+                                <ListItemText primary="Избранное" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <Divider sx={{ bgcolor: '#424242', my: 1 }} />
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => { handleLogout(); handleDrawerToggle(); }}>
+                                <ListItemIcon><ExitToAppIcon color="error"/></ListItemIcon>
+                                <ListItemText primary="Выйти" sx={{ color: '#f44336' }} />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                ) : (
+                    <>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => { keycloak.login(); handleDrawerToggle(); }}>
+                                <ListItemIcon><LoginIcon sx={{ color: 'white' }}/></ListItemIcon>
+                                <ListItemText primary="Войти" />
+                            </ListItemButton>
+                        </ListItem>
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => { keycloak.register(); handleDrawerToggle(); }}>
+                                <ListItemIcon><PersonAddIcon sx={{ color: 'white' }}/></ListItemIcon>
+                                <ListItemText primary="Регистрация" />
+                            </ListItemButton>
+                        </ListItem>
+                    </>
+                )}
+            </List>
+        </Box>
+    );
+
     const dialogTitle = dialogType === 'login' ? 'Вход' : 'Регистрация';
     const submitButtonText = dialogType === 'login' ? 'Войти' : 'Зарегистрироваться';
     const isEmailFieldVisible = dialogType === 'register';
 
-    const hoverScaleSx = {
-        transition: 'transform 0.2s ease-in-out',
-        '&:hover': { transform: 'scale(1.05)' }
-    };
-
     return (
         <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
+            <AppBar position="sticky">
                 <Toolbar>
+                    {/* Кнопка гамбургера (видна только на мобильных < md) */}
+                    <IconButton
+                        color="inherit"
+                        aria-label="open drawer"
+                        edge="start"
+                        onClick={handleDrawerToggle}
+                        sx={{ mr: 2, display: { md: 'none' } }}
+                    >
+                        <MenuIcon />
+                    </IconButton>
+
                     <IconButton
                         aria-label="home"
-                        size="large"
                         color="inherit"
                         onClick={handleHomeClick}
-                        sx={{ ...hoverScaleSx, mr: 1 }}
+                        sx={{ transition: 'transform 0.2s', '&:hover': { transform: 'scale(1.05)' }, display: { xs: 'none', md: 'inline-flex' }, mr: 1 }}
                     >
                         <HomeIcon fontSize="large" />
                     </IconButton>
@@ -189,41 +253,47 @@ function App({ keycloak }: AppProps) {
                     <Typography
                         variant="h6"
                         component="div"
-                        sx={{ color: theme.palette.primary.contrastText, mr: 2, fontSize: '2rem', fontWeight: 'bold' }}
+                        sx={{ color: theme.palette.primary.contrastText, mr: 2, fontSize: { xs: '1.2rem', md: '2rem' }, fontWeight: 'bold' }}
                     >
                         CinemaPro
                     </Typography>
 
                     <Box sx={{ flexGrow: 1 }} />
 
-                    <UserProfile
-                        currentUser={currentUser}
-                        onLoginClick={() => keycloak.login()}
-                        onRegisterClick={() => keycloak.register()}
-                        onLogout={handleLogout}
-                    />
+                    {/* Десктопный профиль (скрыт на мобильных) */}
+                    <Box sx={{ display: { xs: 'none', md: 'block' } }}>
+                        <UserProfile
+                            currentUser={currentUser}
+                            onLoginClick={() => keycloak.login()}
+                            onRegisterClick={() => keycloak.register()}
+                            onLogout={handleLogout}
+                        />
+                    </Box>
                 </Toolbar>
             </AppBar>
 
-            <Container maxWidth="lg" sx={{ my: 2, px: 2 }}>
+            <Drawer
+                variant="temporary"
+                open={mobileOpen}
+                onClose={handleDrawerToggle}
+                ModalProps={{ keepMounted: true }} // Улучшает производительность на мобилках
+                sx={{
+                    display: { xs: 'block', md: 'none' },
+                    '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 250, bgcolor: '#242424' },
+                }}
+            >
+                {drawerContent}
+            </Drawer>
+
+            <Container maxWidth="lg" sx={{ my: 2, px: { xs: 1, sm: 2 } }}>
                 <Routes>
-                    <Route path="/" element={<MoviesTable />} />
+                    <Route path="/" element={<MoviesTable currentUser={currentUser} />} />
 
-                    <Route
-                        path="/movies/:id"
-                        element={<MovieDetailsPage currentUser={currentUser} />}
-                    />
+                    <Route path="/movies/:id" element={<MovieDetailsPage currentUser={currentUser} />} />
 
-                    <Route
-                        path="/my-tickets"
-                        element={
-                            currentUser
-                                ? <MyTicketsPage currentUser={currentUser} />
-                                : <Typography sx={{ mt: 4 }}>
-                                    Войдите в систему, чтобы увидеть свои билеты.
-                                </Typography>
-                        }
-                    />
+                    <Route path="/my-tickets" element={ currentUser ? <MyTicketsPage currentUser={currentUser} /> : <Typography sx={{ mt: 4 }}>Войдите в систему.</Typography> } />
+
+                    <Route path="/favorites" element={ currentUser ? <MyFavoritesPage currentUser={currentUser} /> : <Typography sx={{ mt: 4 }}>Войдите в систему, чтобы увидеть избранное.</Typography> } />
                 </Routes>
             </Container>
 

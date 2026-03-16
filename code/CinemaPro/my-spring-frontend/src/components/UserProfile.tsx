@@ -18,6 +18,8 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import ConfirmationNumberIcon from '@mui/icons-material/ConfirmationNumber';
 import LoginIcon from '@mui/icons-material/Login';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+
 import { useNavigate } from 'react-router-dom';
 
 import type { AuthUser } from '../types';
@@ -116,6 +118,13 @@ function UserProfile({ currentUser, onLoginClick, onRegisterClick, onLogout }: U
                                                     <ConfirmationNumberIcon sx={{ color: '#ffffff' }} />
                                                 </ListItemIcon>
                                                 <ListItemText>Мои билеты</ListItemText>
+                                            </MenuItem>
+
+                                            <MenuItem onClick={() => { navigate('/favorites'); handleCloseProfileMenu(null); }}>
+                                                <ListItemIcon>
+                                                    <FavoriteIcon sx={{ color: '#ff4081' }} />
+                                                </ListItemIcon>
+                                                <ListItemText>Избранное</ListItemText>
                                             </MenuItem>
 
                                             <Box sx={{ my: 1, borderBottom: '1px solid #616161' }}></Box>
