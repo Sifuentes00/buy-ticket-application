@@ -7,6 +7,8 @@ import MoviesTable from './components/MoviesTable';
 import UserProfile from './components/UserProfile';
 import MovieDetailsPage from './components/MovieDetailsPage';
 import MyTicketsPage from './components/MyTicketsPage';
+import MyFavoritesPage from './components/MyFavoritesPage';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 // Material UI
 import {
@@ -161,14 +163,14 @@ function App({ keycloak }: AppProps) {
     };
 
     const drawerContent = (
-        <Box onClick={handleDrawerToggle} sx={{ textAlign: 'center', bgcolor: '#242424', height: '100%', color: 'white' }}>
+        <Box sx={{ textAlign: 'center', bgcolor: '#242424', height: '100%', color: 'white' }}>
             <Typography variant="h6" sx={{ my: 2, fontWeight: 'bold' }}>
                 CinemaPro
             </Typography>
             <Divider sx={{ bgcolor: '#424242' }} />
             <List>
                 <ListItem disablePadding>
-                    <ListItemButton onClick={() => navigate('/')}>
+                    <ListItemButton onClick={() => { navigate('/'); handleDrawerToggle(); }}>
                         <ListItemIcon><HomeIcon sx={{ color: 'white' }}/></ListItemIcon>
                         <ListItemText primary="Главная" />
                     </ListItemButton>
@@ -177,14 +179,24 @@ function App({ keycloak }: AppProps) {
                 {currentUser ? (
                     <>
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => navigate('/my-tickets')}>
+                            <ListItemButton onClick={() => { navigate('/my-tickets'); handleDrawerToggle(); }}>
                                 <ListItemIcon><ConfirmationNumberIcon sx={{ color: 'white' }}/></ListItemIcon>
                                 <ListItemText primary="Мои билеты" />
                             </ListItemButton>
                         </ListItem>
-                        <Divider sx={{ bgcolor: '#424242', my: 1 }} />
+
+                        {/* ДОБАВЛЕН ПУНКТ ИЗБРАННОЕ */}
                         <ListItem disablePadding>
-                            <ListItemButton onClick={handleLogout}>
+                            <ListItemButton onClick={() => { navigate('/favorites'); handleDrawerToggle(); }}>
+                                <ListItemIcon><FavoriteIcon sx={{ color: '#ff4081' }}/></ListItemIcon>
+                                <ListItemText primary="Избранное" />
+                            </ListItemButton>
+                        </ListItem>
+
+                        <Divider sx={{ bgcolor: '#424242', my: 1 }} />
+
+                        <ListItem disablePadding>
+                            <ListItemButton onClick={() => { handleLogout(); handleDrawerToggle(); }}>
                                 <ListItemIcon><ExitToAppIcon color="error"/></ListItemIcon>
                                 <ListItemText primary="Выйти" sx={{ color: '#f44336' }} />
                             </ListItemButton>
@@ -193,13 +205,13 @@ function App({ keycloak }: AppProps) {
                 ) : (
                     <>
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => keycloak.login()}>
+                            <ListItemButton onClick={() => { keycloak.login(); handleDrawerToggle(); }}>
                                 <ListItemIcon><LoginIcon sx={{ color: 'white' }}/></ListItemIcon>
                                 <ListItemText primary="Войти" />
                             </ListItemButton>
                         </ListItem>
                         <ListItem disablePadding>
-                            <ListItemButton onClick={() => keycloak.register()}>
+                            <ListItemButton onClick={() => { keycloak.register(); handleDrawerToggle(); }}>
                                 <ListItemIcon><PersonAddIcon sx={{ color: 'white' }}/></ListItemIcon>
                                 <ListItemText primary="Регистрация" />
                             </ListItemButton>
@@ -275,9 +287,13 @@ function App({ keycloak }: AppProps) {
 
             <Container maxWidth="lg" sx={{ my: 2, px: { xs: 1, sm: 2 } }}>
                 <Routes>
-                    <Route path="/" element={<MoviesTable />} />
+                    <Route path="/" element={<MoviesTable currentUser={currentUser} />} />
+
                     <Route path="/movies/:id" element={<MovieDetailsPage currentUser={currentUser} />} />
-                    <Route path="/my-tickets" element={ currentUser ? <MyTicketsPage currentUser={currentUser} /> : <Typography sx={{ mt: 4 }}>Войдите в систему, чтобы увидеть свои билеты.</Typography> } />
+
+                    <Route path="/my-tickets" element={ currentUser ? <MyTicketsPage currentUser={currentUser} /> : <Typography sx={{ mt: 4 }}>Войдите в систему.</Typography> } />
+
+                    <Route path="/favorites" element={ currentUser ? <MyFavoritesPage currentUser={currentUser} /> : <Typography sx={{ mt: 4 }}>Войдите в систему, чтобы увидеть избранное.</Typography> } />
                 </Routes>
             </Container>
 

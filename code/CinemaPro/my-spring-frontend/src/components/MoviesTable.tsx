@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { hasRole } from '../keycloak';
 import { apiGet, apiPost, apiPut, apiDelete } from '../api';
+import type { AuthUser } from '../types';
 
 import {
     Typography,
@@ -29,11 +30,17 @@ import {
     useTheme,
     useMediaQuery
 } from '@mui/material';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import StarIcon from '@mui/icons-material/Star';
 import EditIcon from '@mui/icons-material/Edit';
 import TheatersIcon from '@mui/icons-material/Theaters';
+
+interface MoviesTableProps {
+    currentUser: AuthUser;
+}
 
 interface Movie {
     id: number;
@@ -60,12 +67,9 @@ interface DialogFormErrors {
     genre?: string;
 }
 
-function MoviesTable() {
+function MoviesTable({ currentUser }: MoviesTableProps) {
     const navigate = useNavigate();
-
-    // Подключаем тему и хук для отслеживания ширины экрана
     const theme = useTheme();
-    // Возвращает true, если экран меньше 'md' (900px) - планшеты и телефоны
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -76,6 +80,8 @@ function MoviesTable() {
     const [dialogFormData, setDialogFormData] = useState<DialogFormData>({
         title: '', director: '', releaseYear: '', genre: '',
     });
+
+    const [favoriteIds, setFavoriteIds] = useState<Set<number>>(new Set());
 
     const [dialogFormErrors, setDialogFormErrors] = useState<DialogFormErrors>({});
 
@@ -97,7 +103,45 @@ function MoviesTable() {
 
     useEffect(() => {
         fetchMovies();
-    }, []);
+        if (currentUser) {
+            fetchFavorites();
+        } else {
+            setFavoriteIds(new Set());
+        }
+    }, [currentUser]);
+
+    const fetchFavorites = () => {
+        apiGet<Movie[]>(`/favorites?userId=${currentUser?.id}`)
+            .then(res => {
+                const ids = new Set(res.data.map(m => m.id));
+                setFavoriteIds(ids);
+            })
+            .catch(err => console.error("Ошибка загрузки избранного", err));
+    };
+
+    const handleToggleFavorite = async (movieId: number) => {
+        if (!currentUser) {
+            alert("Войдите в систему, чтобы добавлять в избранное!");
+            return;
+        }
+
+        const isFav = favoriteIds.has(movieId);
+        try {
+            if (isFav) {
+                await apiDelete(`/favorites?userId=${currentUser.id}&movieId=${movieId}`);
+                setFavoriteIds(prev => {
+                    const next = new Set(prev);
+                    next.delete(movieId);
+                    return next;
+                });
+            } else {
+                await apiPost(`/favorites?userId=${currentUser.id}&movieId=${movieId}`, {});
+                setFavoriteIds(prev => new Set(prev).add(movieId));
+            }
+        } catch (err) {
+            console.error("Ошибка при изменении избранного", err);
+        }
+    };
 
     const fetchMovies = () => {
         setLoading(true);
@@ -272,11 +316,22 @@ function MoviesTable() {
                                     <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
                                         {movie.title}
                                     </Typography>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#303030', px: 1, py: 0.5, borderRadius: 1 }}>
-                                        <StarIcon sx={{ fontSize: '1rem', color: ratingColor, mr: 0.5 }} />
-                                        <Typography variant="body2" sx={{ color: ratingColor, fontWeight: 'bold' }}>
-                                            {hasNumericRating ? averageRating!.toFixed(1) : '—'}
-                                        </Typography>
+
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                                        <IconButton
+                                            size="small"
+                                            onClick={(e) => { e.stopPropagation(); handleToggleFavorite(movie.id); }}
+                                            sx={{ color: '#ff4081' }}
+                                        >
+                                            {favoriteIds.has(movie.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                                        </IconButton>
+
+                                        <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#303030', px: 1, py: 0.5, borderRadius: 1 }}>
+                                            <StarIcon sx={{ fontSize: '1rem', color: ratingColor, mr: 0.5 }} />
+                                            <Typography variant="body2" sx={{ color: ratingColor, fontWeight: 'bold' }}>
+                                                {hasNumericRating ? averageRating!.toFixed(1) : '—'}
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                 </Box>
                                 <Typography variant="body2" sx={{ color: '#bdbdbd', mb: 1 }}>Режиссер: {movie.director}</Typography>
@@ -307,7 +362,6 @@ function MoviesTable() {
         </Grid>
     );
 
-    // --- РЕНДЕР ДЛЯ ДЕСКТОПА (Таблица) ---
     const renderDesktopView = () => (
         <TableContainer component={Paper} sx={{ boxShadow: 3, backgroundColor: '#212121', color: textColor, borderRadius: 1 }}>
             <Table sx={{ minWidth: 650 }} aria-label="movies table">
@@ -318,6 +372,10 @@ function MoviesTable() {
                         <TableCell align="center" sx={{ width: '130px', color: textColor }}>Год выхода</TableCell>
                         <TableCell align="center" sx={{ color: textColor }}>Жанр</TableCell>
                         <TableCell align="center" sx={{ width: '110px', color: textColor }}>Рейтинг</TableCell>
+
+                        {/* НОВАЯ КОЛОНКА ДЛЯ ИЗБРАННОГО */}
+                        {currentUser && <TableCell align="center" sx={{ width: '60px', color: textColor }}></TableCell>}
+
                         <TableCell align="center" sx={{ width: '160px', color: textColor }}>Билеты</TableCell>
                         <TableCell align="center" sx={{ color: textColor, width: '60px' }}></TableCell>
                         <TableCell align="center" sx={{ color: textColor, width: '60px' }}></TableCell>
@@ -348,6 +406,20 @@ function MoviesTable() {
                                         <Typography variant="caption" sx={{ color: textColor, opacity: 0.7 }}>({movie.reviews ? movie.reviews.length : 0})</Typography>
                                     </Box>
                                 </TableCell>
+
+                                {/* КНОПКА ИЗБРАННОЕ В ТАБЛИЦЕ */}
+                                {currentUser && (
+                                    <TableCell align="center" sx={{ width: '60px' }}>
+                                        <IconButton
+                                            size="small"
+                                            onClick={() => handleToggleFavorite(movie.id)}
+                                            sx={{ color: '#ff4081' }}
+                                        >
+                                            {favoriteIds.has(movie.id) ? <FavoriteIcon /> : <FavoriteBorderIcon />}
+                                        </IconButton>
+                                    </TableCell>
+                                )}
+
                                 <TableCell align="center" sx={{ width: '160px', color: textColor }}>
                                     <Button variant="contained" size="small" onClick={() => handleDetailsClick(movie.id)}>БИЛЕТЫ</Button>
                                 </TableCell>
