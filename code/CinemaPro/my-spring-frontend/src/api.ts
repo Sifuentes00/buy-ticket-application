@@ -4,7 +4,7 @@ import type { InternalAxiosRequestConfig } from "axios";
 import keycloak from "./keycloak";
 
 const api = axios.create({
-    baseURL: "http://localhost:8081/api",
+    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8081/api",
     headers: {
         "Content-Type": "application/json",
     },
@@ -20,11 +20,9 @@ const PUBLIC_GETS = [
     "/showtimes"
 ];
 
-// --- Интерцептор запросов ---
 api.interceptors.request.use(
     async (config: InternalAxiosRequestConfig) => {
 
-        // Проверяем, публичный ли GET
         const isPublicGet =
             config.method === "get" &&
             config.url &&
@@ -37,10 +35,8 @@ api.interceptors.request.use(
             return config;
         }
 
-        // --- Для защищённых запросов обновляем токен ---
         if (keycloak.authenticated) {
             try {
-                // Попытка обновить токен, если срок жизни < 30 секунд
                 await keycloak.updateToken(30);
                 if (config.headers) {
                     config.headers.Authorization = `Bearer ${keycloak.token}`;
@@ -50,13 +46,11 @@ api.interceptors.request.use(
                 keycloak.logout();
             }
         }
-
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-// ===== Универсальные методы =====
 export const apiGet = async <T>(url: string) => api.get<T>(url);
 export const apiPost = async <T>(url: string, data: any) => api.post<T>(url, data);
 export const apiPut = async <T>(url: string, data: any) => api.put<T>(url, data);

@@ -1,0 +1,17 @@
+target/
+*.jar
+*.war
+
+*.log
+
+.idea/
+.vscode/
+*.iml
+*.swp
+**/node_modules/
+
+.dockerignore
+
+.DS_Store
+Thumbs.db
+
