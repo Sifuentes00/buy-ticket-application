@@ -30,7 +30,6 @@ public class Showtime {
     private Theater theater; // Предполагает наличие сущности Theater
     // <-- КОНЕЦ ДОБАВЛЕНО -->
 
-
     @OneToMany(mappedBy = "showtime", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Ticket> tickets = new ArrayList<>();

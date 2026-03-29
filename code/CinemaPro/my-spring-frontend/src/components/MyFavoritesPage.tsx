@@ -26,7 +26,8 @@ export default function MyFavoritesPage({ currentUser }: { currentUser: AuthUser
 
     useEffect(() => {
         if (currentUser) {
-            apiGet<Movie[]>(`/favorites?userId=${currentUser.id}`)
+            // Исправлено: убрали userId из параметров
+            apiGet<Movie[]>('/favorites')
                 .then(res => setMovies(res.data))
                 .finally(() => setLoading(false));
         }
@@ -34,8 +35,9 @@ export default function MyFavoritesPage({ currentUser }: { currentUser: AuthUser
 
     const handleRemoveFavorite = async (movieId: number) => {
         try {
-            await apiDelete(`/favorites?userId=${currentUser?.id}&movieId=${movieId}`);
-            setMovies(movies.filter(m => m.id !== movieId)); // Убираем с экрана
+            // Исправлено: убрали userId из параметров
+            await apiDelete(`/favorites?movieId=${movieId}`);
+            setMovies(movies.filter(m => m.id !== movieId));
         } catch (err) {
             console.error("Ошибка при удалении", err);
         }
@@ -54,21 +56,18 @@ export default function MyFavoritesPage({ currentUser }: { currentUser: AuthUser
             ) : (
                 <Grid container spacing={3}>
                     {movies.map(movie => {
-                        // Вычисляем рейтинг
                         const totalRating = movie.reviews?.reduce((sum, r) => sum + r.rating, 0) || 0;
                         const avgRating = movie.reviews?.length ? (totalRating / movie.reviews.length).toFixed(1) : '—';
 
-                        // Определяем цвет звездочки
                         let ratingColor = '#bdbdbd';
                         if (avgRating !== '—') {
                             const numRating = parseFloat(avgRating);
-                            if (numRating >= 8) ratingColor = '#4caf50'; // Зеленый
-                            else if (numRating >= 5) ratingColor = '#ffeb3b'; // Желтый
-                            else ratingColor = '#f44336'; // Красный
+                            if (numRating >= 8) ratingColor = '#4caf50';
+                            else if (numRating >= 5) ratingColor = '#ffeb3b';
+                            else ratingColor = '#f44336';
                         }
 
                         return (
-                            // ИСПРАВЛЕНА ОШИБКА GRID (size={...})
                             <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={movie.id}>
                                 <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', bgcolor: '#212121', color: '#ffffff' }}>
                                     <CardContent sx={{ flexGrow: 1 }}>
@@ -76,13 +75,10 @@ export default function MyFavoritesPage({ currentUser }: { currentUser: AuthUser
                                             <Typography variant="h6" sx={{ fontWeight: 'bold', lineHeight: 1.2 }}>
                                                 {movie.title}
                                             </Typography>
-
-                                            {/* Блок с Иконками: Удалить + Звездочка (ИСПРАВЛЕНА ОШИБКА unused variables) */}
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <IconButton size="small" onClick={() => handleRemoveFavorite(movie.id)}>
                                                     <FavoriteIcon sx={{ color: '#ff4081' }} />
                                                 </IconButton>
-
                                                 <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: '#303030', px: 1, py: 0.5, borderRadius: 1 }}>
                                                     <StarIcon sx={{ fontSize: '1rem', color: ratingColor, mr: 0.5 }} />
                                                     <Typography variant="body2" sx={{ color: ratingColor, fontWeight: 'bold' }}>

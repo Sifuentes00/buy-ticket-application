@@ -9,15 +9,15 @@
         </encoder>
     </appender>
 
-    <!-- ELK -->
-    <appender name="LOGSTASH"
-              class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+<!--    &lt;!&ndash; ELK &ndash;&gt;-->
+<!--    <appender name="LOGSTASH"-->
+<!--              class="net.logstash.logback.appender.LogstashTcpSocketAppender">-->
 
-        <destination>host.docker.internal:5001</destination>
+<!--        <destination>host.docker.internal:5001</destination>-->
 
-        <encoder
-                class="net.logstash.logback.encoder.LogstashEncoder"/>
-    </appender>
+<!--        <encoder-->
+<!--                class="net.logstash.logback.encoder.LogstashEncoder"/>-->
+<!--    </appender>-->
 
     <!-- Логи Seat → только консоль -->
     <logger name="com.matvey.cinema.service.impl.SeatServiceImpl"

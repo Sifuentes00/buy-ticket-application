@@ -111,7 +111,8 @@ function MoviesTable({ currentUser }: MoviesTableProps) {
     }, [currentUser]);
 
     const fetchFavorites = () => {
-        apiGet<Movie[]>(`/favorites?userId=${currentUser?.id}`)
+        // Исправлено: бэкенд берет userId из токена автоматически
+        apiGet<Movie[]>('/favorites')
             .then(res => {
                 const ids = new Set(res.data.map(m => m.id));
                 setFavoriteIds(ids);
@@ -121,21 +122,23 @@ function MoviesTable({ currentUser }: MoviesTableProps) {
 
     const handleToggleFavorite = async (movieId: number) => {
         if (!currentUser) {
-            alert("Войдите в систему, чтобы добавлять в избранное!");
+            alert("Войдите в систему!");
             return;
         }
 
         const isFav = favoriteIds.has(movieId);
         try {
             if (isFav) {
-                await apiDelete(`/favorites?userId=${currentUser.id}&movieId=${movieId}`);
+                await apiDelete(`/favorites?movieId=${movieId}`);
+                // ОБЯЗАТЕЛЬНО: Удаляем ID из локального списка, чтобы иконка погасла
                 setFavoriteIds(prev => {
                     const next = new Set(prev);
                     next.delete(movieId);
                     return next;
                 });
             } else {
-                await apiPost(`/favorites?userId=${currentUser.id}&movieId=${movieId}`, {});
+                await apiPost(`/favorites?movieId=${movieId}`, {});
+                // ОБЯЗАТЕЛЬНО: Добавляем ID в локальный список, чтобы иконка загорелась
                 setFavoriteIds(prev => new Set(prev).add(movieId));
             }
         } catch (err) {

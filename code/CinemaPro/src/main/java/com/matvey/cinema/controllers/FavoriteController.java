@@ -6,6 +6,8 @@ import com.matvey.cinema.repository.FavoriteRepository;
 import com.matvey.cinema.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +25,8 @@ public class FavoriteController {
     private MovieRepository movieRepository;
 
     @GetMapping
-    public ResponseEntity<List<Movie>> getUserFavorites(@RequestParam String userId) {
+    public ResponseEntity<List<Movie>> getUserFavorites(@AuthenticationPrincipal Jwt jwt) {
+        String userId = jwt.getSubject();
         List<Movie> favoriteMovies = favoriteRepository.findAllByKeycloakUserId(userId)
                 .stream()
                 .map(Favorite::getMovie)
@@ -32,7 +35,8 @@ public class FavoriteController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addFavorite(@RequestParam String userId, @RequestParam Long movieId) {
+    public ResponseEntity<?> addFavorite(@AuthenticationPrincipal Jwt jwt, @RequestParam Long movieId) {
+        String userId = jwt.getSubject(); // ID из токена
         if (favoriteRepository.existsByKeycloakUserIdAndMovieId(userId, movieId)) {
             return ResponseEntity.badRequest().body("Фильм уже в избранном");
         }
@@ -46,7 +50,8 @@ public class FavoriteController {
 
     @DeleteMapping
     @Transactional
-    public ResponseEntity<?> removeFavorite(@RequestParam String userId, @RequestParam Long movieId) {
+    public ResponseEntity<?> removeFavorite(@AuthenticationPrincipal Jwt jwt, @RequestParam Long movieId) {
+        String userId = jwt.getSubject(); // ID из токена
         favoriteRepository.deleteByKeycloakUserIdAndMovieId(userId, movieId);
         return ResponseEntity.ok().build();
     }

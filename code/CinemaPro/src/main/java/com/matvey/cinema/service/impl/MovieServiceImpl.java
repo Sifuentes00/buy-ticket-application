@@ -2,6 +2,7 @@ package com.matvey.cinema.service.impl;
 
 import com.matvey.cinema.cache.InMemoryCache;
 import com.matvey.cinema.model.entities.Movie;
+import com.matvey.cinema.repository.FavoriteRepository;
 import com.matvey.cinema.repository.MovieRepository;
 import com.matvey.cinema.service.MovieService;
 import org.slf4j.Logger;
@@ -80,6 +81,10 @@ public class MovieServiceImpl implements MovieService {
         logger.info("event=movie_find_all_success count={}",movies.size());
         return movies;
     }
+
+    @Autowired
+    private FavoriteRepository favoriteRepository;
+
     @Override
     @Transactional
     public Movie save(Movie movie){
@@ -94,19 +99,22 @@ public class MovieServiceImpl implements MovieService {
         logger.debug("event=movie_cache_evicted movieId={}",savedMovie.getId());
         return savedMovie;
     }
+
     @Override
     @Transactional
-    public void deleteById(Long id){
-        logger.info("event=movie_delete_start movieId={}",id);
-        Optional<Movie> movieOptional=movieRepository.findById(id);
-        if(movieOptional.isPresent()){
-            Movie movie=movieOptional.get();
+    public void deleteById(Long id) {
+        logger.info("event=movie_delete_start movieId={}", id);
+        Optional<Movie> movieOptional = movieRepository.findById(id);
+        if (movieOptional.isPresent()) {
+            Movie movie = movieOptional.get();
+            favoriteRepository.deleteByMovieId(id);
+
+
             evictRelatedCache(movie);
             movieRepository.deleteById(id);
-            logger.info("event=movie_deleted movieId={}",id);
-        }else{
-            logger.warn("event=movie_delete_not_found movieId={}",id);
-            throw new CustomNotFoundException("Movie not found with ID: "+id);
+            logger.info("event=movie_deleted movieId={}", id);
+        } else {
+            throw new CustomNotFoundException("Movie not found with ID: " + id);
         }
     }
     private void evictRelatedCache(Movie movie){

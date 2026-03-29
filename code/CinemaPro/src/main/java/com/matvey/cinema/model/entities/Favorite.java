@@ -10,7 +10,7 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "keycloak_user_id", nullable = false)
+    @Column(name = "keycloak_user_id")
     private String keycloakUserId;
 
     @ManyToOne(fetch = FetchType.LAZY)

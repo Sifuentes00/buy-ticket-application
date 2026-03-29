@@ -13,4 +13,5 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
     Optional<Favorite> findByKeycloakUserIdAndMovieId(String keycloakUserId, Long movieId);
     boolean existsByKeycloakUserIdAndMovieId(String keycloakUserId, Long movieId);
     void deleteByKeycloakUserIdAndMovieId(String keycloakUserId, Long movieId);
+    void deleteByMovieId(Long movieId);
 }

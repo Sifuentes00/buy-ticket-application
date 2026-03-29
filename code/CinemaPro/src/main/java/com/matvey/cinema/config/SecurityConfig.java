@@ -32,6 +32,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/reviews/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/showtimes/**").permitAll()
                         .requestMatchers("/api/seats/**").permitAll()
+                        .requestMatchers("/api/favorites/**").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/theaters/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/tickets/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/users/**").permitAll()
