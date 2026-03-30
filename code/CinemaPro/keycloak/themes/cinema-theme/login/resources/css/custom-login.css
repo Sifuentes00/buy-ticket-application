@@ -1,0 +1,864 @@
+//* ===== FIX CENTERING (ГЛАВНОЕ) ===== */
+
+#kc-container,
+#kc-container-wrapper,
+#kc-content,
+#kc-content-wrapper {
+    width: 100% !important;
+    display: flex !important;/* ===== RESET ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #0f0f0f;
+    color: #fff;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Левая часть (форма) */
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Правая часть (фон) */
+.right {
+    flex: 1;
+    background: linear-gradient(135deg, #1e1e1e, #000000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== FORM CARD ===== */
+.card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* ===== INPUT ===== */
+.input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #1c1c1c;
+    color: #fff;
+    font-size: 15px;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #4f8cff;
+}
+
+/* ===== BUTTON ===== */
+.button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.info-text {
+    color: #ccc;
+    font-size: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 14px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+.button:hover {
+    transform: translateY(-1px);
+}
+
+/* ===== LINKS ===== */
+.links {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.links a {
+    color: #8ab4ff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.links a:hover {
+    color: #fff;
+}
+
+/* ===== RIGHT SIDE TEXT ===== */
+.brand {
+    font-size: 42px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    .right {
+        display: none;
+    }
+
+    .left {
+        flex: 1;
+    }
+}
+    justify-content: center !important;/* ===== RESET ===== */
+* {
+    box-sizing: bor/* ===== RESET ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #0f0f0f;
+    color: #fff;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Левая часть (форма) */
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Правая часть (фон) */
+.right {
+    flex: 1;
+    background: linear-gradient(135deg, #1e1e1e, #000000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== FORM CARD ===== */
+.card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* ===== INPUT ===== */
+.input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #1c1c1c;
+    color: #fff;
+    font-size: 15px;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #4f8cff;
+}
+
+/* ===== BUTTON ===== */
+.button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+/* ===== LINKS ===== */
+.links {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.links a {
+    color: #8ab4ff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.links a:hover {
+    color: #fff;
+}
+
+/* ===== RIGHT SIDE TEXT ===== */
+.brand {
+    font-size: 42px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    .right {
+        display: none;
+    }
+
+    .left {
+        flex: 1;
+    }
+}der-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #0f0f0f;
+    color: #fff;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Левая часть (форма) */
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Правая часть (фон) */
+.right {
+    flex: 1;
+    background: linear-gradient(135deg, #1e1e1e, #000000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== FORM CARD ===== */
+.card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* ===== INPUT ===== */
+.input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #1c1c1c;
+    color: #fff;
+    font-size: 15px;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #4f8cff;
+}
+
+/* ===== BUTTON ===== */
+.button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+/* ===== LINKS ===== */
+.links {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.links a {
+    color: #8ab4ff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.links a:hover {
+    color: #fff;
+}
+
+/* ===== RIGHT SIDE TEXT ===== */
+.brand {
+    font-size: 42px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    .right {
+        display: none;
+    }
+
+    .left {
+        flex: 1;
+    }
+}
+    align-items: center !important;
+}
+
+/* растягиваем всю страницу */
+html, body {
+    height: 100%;
+}
+
+/* центрируем форму */
+#kc-form-wrapper {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+/* нормальная ширина карточки */
+.card-pf {
+    width: 100% !important;
+    max-width: 420px !important;
+    margin: 0 auto !important;
+}/* ===== FIX DESKTOP OVERFLOW ===== */
+
+/* убираем боковые отступы bootstrap */
+#kc-content-wrapper {
+    padding: 0 !important;
+}
+
+/* фикс контейнера формы */
+#kc-form {
+    width: 100% !important;
+}
+
+/* критично: ограничиваем ширину формы */
+#kc-form-wrapper {
+    width: 100% !important;
+}
+
+/* убираем grid Keycloak */
+.row {
+    margin: 0 !important;
+}
+
+[class*="col-"] {
+    padding: 0 !important;
+    max-width: 100% !important;
+    flex: none !important;
+}
+
+/* фикс кнопки */
+.btn-primary {
+    display: block !important;
+    width: 100% !important;
+}
+
+/* фикс overflow */
+.card-pf {
+    overflow: hidden;
+}/* ===== RESET ===== */
+* {
+    box-sizing: border-box;
+}
+
+/* ===== BODY ===== */
+body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a1a, #0f0f0f) !important;
+    color: #ffffff !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* ===== CENTER CONTAINER ===== */
+#kc-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ===== CARD ===== */
+.card-pf {
+    width: 100%;
+    max-width: 420px;
+    padding: 28px;
+    border-radius: 12px;
+    background: #1f1f1f !important;
+    border: 1px solid #2c2c2c;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+}
+
+/* ===== HEADER ===== */
+#kc-header {
+    display: none;
+}
+
+/* ===== TITLE ===== */
+#kc-page-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #ffffff !important;
+}
+
+/* ===== LABELS ===== */
+label {
+    color: #e0e0e0 !important;
+    font-size: 14px;
+}
+
+/* ===== INPUTS ===== */
+.form-control {
+    width: 100% !important;
+    padding: 12px !important;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    border-radius: 8px !important;
+    background: #2a2a2a !important;
+    border: 1px solid #3a3a3a !important;
+    color: #ffffff !important;
+    font-size: 14px;
+}
+
+.form-control:focus {
+    border-color: #4f8cff !important;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(79,140,255,0.3);
+}
+
+/* ===== BUTTON ===== */
+.btn-primary {
+    width: 100% !important;
+    padding: 12px !important;
+    border-radius: 8px !important;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9) !important;
+    border: none !important;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79,140,255,0.4);
+}
+
+/* ===== LINKS ===== */
+a {
+    color: #8ab4ff !important;
+    font-size: 13px;
+}
+
+a:hover {
+    color: #ffffff !important;
+}
+
+/* ===== FOOTER LINKS ===== */
+#kc-form-options,
+#kc-registration {
+    text-align: center;
+    margin-top: 12px;
+}
+
+/* ===== FIX GRID ===== */
+.row,
+.col-sm-12,
+.col-md-12,
+.col-lg-12 {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 480px) {
+    .card-pf {
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    #kc-page-title {
+        font-size: 18px;
+    }
+}/* Общий фон */
+body {
+    background: linear-gradient(135deg, #1e1e1e, #121212) !important;
+    color: #e0e0e0 !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Центрирование */
+#kc-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Карточка */
+.card-pf {
+    width: 400px !important;
+    padding: 30px !important;
+    border-radius: 12px !important;
+    background: #1f1f1f !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
+}
+
+/* Заголовок */
+#kc-page-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+/* Поля */
+.form-control {
+    background: #2a2a2a !important;
+    border: 1px solid #444 !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    color: #fff !important;
+}
+
+.form-control:focus {
+    border-color: #4f8cff !important;
+    box-shadow: 0 0 0 1px #4f8cff !important;
+}
+
+/* Кнопка */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px !important;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9) !important;
+    border: none !important;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79,140,255,0.4);
+}
+
+/* Ссылки */
+a {
+    color: #8ab4ff !important;
+}
+
+a:hover {
+    color: #ffffff !important;
+}
+
+/* Убрать мусорный header */
+#kc-header {
+    display: none !important;
+}* Основной фон страницы */
+body {
+    background-color: #242424 !important;
+    backgroun/* Общий фон */
+body {
+    background: linear-gradient(135deg, #1e1e1e, #121212) !important;
+    color: #e0e0e0 !important;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+/* Центрирование */
+#kc-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Карточка */
+.card-pf {
+    width: 400px !important;
+    padding: 30px !important;
+    border-radius: 12px !important;
+    background: #1f1f1f !important;
+    border: 1px solid #333 !important;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6) !important;
+}
+
+/* Заголовок */
+#kc-page-title {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+/* Поля */
+.form-control {
+    background: #2a2a2a !important;
+    border: 1px solid #444 !important;
+    border-radius: 6px !important;
+    padding: 10px !important;
+    color: #fff !important;
+}
+
+.form-control:focus {
+    border-color: #4f8cff !important;
+    box-shadow: 0 0 0 1px #4f8cff !important;
+}
+
+/* Кнопка */
+.btn-primary {
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px !important;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9) !important;
+    border: none !important;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79,140,255,0.4);
+}
+
+/* Ссылки */
+a {
+    color: #8ab4ff !important;
+}
+
+a:hover {
+    color: #ffffff !important;
+}
+
+/* Убрать мусорный header */
+#kc-header {
+    display: none !important;
+}d-image: none !important;
+    color: rgba(255, 255, 255, 0.87) !important;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+}
+
+/* Карточка входа */
+#kc-form-login, .card-pf {
+    background-color: #212121 !important;
+    border: 1px solid #424242 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+}
+
+/* Заголовки */
+#kc-page-title {
+    color: #ffffff !important;
+}
+
+/* Поля ввода *//* ===== RESET ===== */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: #0f0f0f;
+    color: #fff;
+}
+
+/* ===== LAYOUT ===== */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Левая часть (форма) */
+.left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+/* Правая часть (фон) */
+.right {
+    flex: 1;
+    background: linear-gradient(135deg, #1e1e1e, #000000);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ===== FORM CARD ===== */
+.card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* ===== INPUT ===== */
+.input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #1c1c1c;
+    color: #fff;
+    font-size: 15px;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #4f8cff;
+}
+
+/* ===== BUTTON ===== */
+.button {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    background: linear-gradient(135deg, #4f8cff, #3a6fd9);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.button:hover {
+    transform: translateY(-1px);
+}
+
+/* ===== LINKS ===== */
+.links {
+    margin-top: 15px;
+    text-align: center;
+}
+
+.links a {
+    color: #8ab4ff;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.links a:hover {
+    color: #fff;
+}
+
+/* ===== RIGHT SIDE TEXT ===== */
+.brand {
+    font-size: 42px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+
+/* ===== MOBILE ===== */
+@media (max-width: 900px) {
+    .right {
+        display: none;
+    }
+
+    .left {
+        flex: 1;
+    }
+}
+form-control {
+    background-color: #333333 !important;
+    border: 1px solid #616161 !important;
+    color: #ffffff !important;
+}
+
+.form-control:focus {
+    border-color: #1976d2 !important;
+}
+
+/* Кнопка "Войти" */
+.btn-primary {
+    background-color: #1976d2 !important;
+    border: none !important;
+    background-image: none !important;
+    font-weight: bold !important;
+    text-transform: uppercase !important;
+}
+
+.btn-primary:hover {
+    background-color: #1565c0 !important;
+}
+
+/* Ссылки (Забыли пароль, Регистрация) */
+a {
+    color: #646cff !important;
+}
+a:hover {
+    color: #535bf2 !important;
+}

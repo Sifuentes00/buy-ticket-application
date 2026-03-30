@@ -49,6 +49,7 @@ services:
       KC_HOSTNAME_STRICT: "false"
     volumes:
       - keycloak_data:/opt/keycloak/data
+      - ./keycloak/themes:/opt/keycloak/themes
 
   frontend:
     build:
