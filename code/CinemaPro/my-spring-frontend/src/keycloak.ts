@@ -2,7 +2,7 @@
 import Keycloak from "keycloak-js";
 
 const keycloak = new Keycloak({
-    url: "http://localhost:8080",
+    url: import.meta.env.VITE_KEYCLOAK_URL || "http://localhost:8080",
     realm: "cinema-app",
     clientId: "cinema_frontend"
 });
@@ -10,6 +10,7 @@ const keycloak = new Keycloak({
 export const initKeycloak = () =>
     keycloak.init({
         onLoad: "check-sso",
+        checkLoginIframe: false,
         pkceMethod: "S256"
     });
 

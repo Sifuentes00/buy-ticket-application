@@ -1,5 +1,6 @@
 package com.matvey.cinema.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -52,19 +53,12 @@ public class SecurityConfig {
         return http.build();
     }
 
-    /**
-     * JwtDecoder для dev: проверяет подпись, но игнорирует issuer
-     */
+    @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
+    private String jwkSetUri;
+
     @Bean
     public JwtDecoder jwtDecoder() {
-        String jwkSetUri = "http://keycloak:8080/realms/cinema-app/protocol/openid-connect/certs";
-        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
-
-        // Dev-only: отключаем проверку issuer
-        OAuth2TokenValidator<Jwt> signatureOnly = token -> OAuth2TokenValidatorResult.success();
-        jwtDecoder.setJwtValidator(signatureOnly);
-
-        return jwtDecoder;
+        return NimbusJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
 
     /**
