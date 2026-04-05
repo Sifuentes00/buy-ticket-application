@@ -185,7 +185,6 @@ function App({ keycloak }: AppProps) {
                             </ListItemButton>
                         </ListItem>
 
-                        {/* ДОБАВЛЕН ПУНКТ ИЗБРАННОЕ */}
                         <ListItem disablePadding>
                             <ListItemButton onClick={() => { navigate('/favorites'); handleDrawerToggle(); }}>
                                 <ListItemIcon><FavoriteIcon sx={{ color: '#ff4081' }}/></ListItemIcon>

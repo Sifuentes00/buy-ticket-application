@@ -596,63 +596,49 @@ public class TicketServiceImpl implements TicketService {
                 .getPrincipal();
 
         String keycloakUserId = jwt.getSubject();
+        String userId = jwt.getSubject();
+        String username = jwt.getClaimAsString("preferred_username");
+        String email = jwt.getClaimAsString("email");
 
         logger.info("event=ticket_purchase_start userId={} showtimeId={} seats={}",
                 keycloakUserId,
                 purchaseRequest.getShowtimeId(),
                 purchaseRequest.getSeatNumbers());
 
-        Showtime showtime = showtimeRepository
-                .findById(purchaseRequest.getShowtimeId())
-                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+        Showtime showtime = showtimeRepository.findById(purchaseRequest.getShowtimeId())
+                .orElseThrow(() -> new IllegalArgumentException("Showtime not found"));
 
         List<Ticket> purchasedTickets = new ArrayList<>();
 
         BigDecimal ticketPrice = BigDecimal.valueOf(500.0);
 
-        for (String seatNumber : purchaseRequest.getSeatNumbers()) {
+        for (String seatStr : purchaseRequest.getSeatNumbers()) {
 
-            Matcher matcher = SEAT_PATTERN.matcher(seatNumber);
+            Matcher matcher = SEAT_PATTERN.matcher(seatStr);
 
-            if (!matcher.matches()) {
-
-                logger.warn("event=seat_format_invalid seatNumber={} userId={}",
-                        seatNumber, keycloakUserId);
-
-                throw new RuntimeException("Invalid seat format: " + seatNumber);
-            }
+            if (!matcher.matches()) throw new IllegalArgumentException("Invalid seat format");
 
             int row = Integer.parseInt(matcher.group(1));
-            int seat = Integer.parseInt(matcher.group(2));
+            int num = Integer.parseInt(matcher.group(2));
 
-            Seat seatEntity = seatRepository
-                    .findBySeatRowAndNumber(row, seat)
-                    .orElseThrow(() ->
-                            new RuntimeException("Seat not found: " + seatNumber));
+            Seat seat = seatRepository.findBySeatRowAndNumber(row, num)
+                    .orElseThrow(() -> new IllegalArgumentException("Seat not found"));
 
-            Optional<Ticket> existingTicket =
-                    ticketRepository.findByShowtimeAndSeat(showtime, seatEntity);
 
-            if (existingTicket.isPresent()) {
-
-                logger.warn("event=seat_already_booked seatNumber={} showtimeId={}",
-                        seatNumber, showtime.getId());
-
-                throw new RuntimeException("Seat already booked: " + seatNumber);
+            if (ticketRepository.findByShowtimeAndSeat(showtime, seat).isPresent()) {
+                throw new IllegalStateException("Seat " + seatStr + " is already taken");
             }
 
             Ticket ticket = new Ticket();
             ticket.setShowtime(showtime);
-            ticket.setSeat(seatEntity);
-            ticket.setKeycloakUserId(keycloakUserId);
-            ticket.setPrice(ticketPrice);
+            ticket.setSeat(seat);
+            ticket.setSeatNumber(seatStr);
+            ticket.setPrice(new BigDecimal("300.00")); // MANUALLY SET PRICE
+            ticket.setKeycloakUserId(userId);
+            ticket.setUsername(username);
+            ticket.setEmail(email);
 
-            Ticket savedTicket = ticketRepository.save(ticket);
-
-            purchasedTickets.add(savedTicket);
-
-            logger.info("event=ticket_created ticketId={} seat={} userId={}",
-                    savedTicket.getId(), seatNumber, keycloakUserId);
+            purchasedTickets.add(ticketRepository.save(ticket));
         }
 
         cache.evict(CacheKeys.TICKETS_ALL);

@@ -26,7 +26,7 @@ api.interceptors.request.use(
         const isPublicGet =
             config.method === "get" &&
             config.url &&
-            PUBLIC_GETS.some((path) => config.url!.startsWith(path));
+            PUBLIC_GETS.some((path) => config.url === path);
 
         if (isPublicGet) {
             if (config.headers) {
