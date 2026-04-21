@@ -1197,8 +1197,8 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                                         const isOccupied = showtimeTickets.some(ticket => ticket.seatNumber === seatIdentifier);
                                         const isSelected = selectedSeats.includes(seatIdentifier);
 
-                                        const seatColor = isOccupied ? '#757575' : (isSelected ? '#1976d2' : '#616161');
-                                        const textColor = isOccupied ? '#e0e0e0' : (isSelected ? '#ffffff' : '#ffffff');
+                                        const seatColor = isOccupied ? '#424242' : (isSelected ? '#1976d2' : '#9e9e9e');
+                                        const textColor = isOccupied ? '#9e9e9e' : (isSelected ? '#ffffff' : '#000000');
 
 
                                         return (
@@ -1239,11 +1239,11 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                     {/* Индикаторы занятости и выбора */}
                     <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 3 }}>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{ width: 20, height: 20, bgcolor: '#616161', mr: 1, borderRadius: 1 }}></Box>
+                            <Box sx={{ width: 20, height: 20, bgcolor: '#9e9e9e', mr: 1, borderRadius: 1 }}></Box>
                             <Typography variant="body2" sx={{ color: '#ffffff' }}>Свободно</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                            <Box sx={{ width: 20, height: 20, bgcolor: '#757575', mr: 1, borderRadius: 1 }}></Box>
+                            <Box sx={{ width: 20, height: 20, bgcolor: '#424242', mr: 1, borderRadius: 1 }}></Box>
                             <Typography variant="body2" sx={{ color: '#ffffff' }}>Занято</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -1256,7 +1256,7 @@ function MovieDetailsPage({ currentUser }: MovieDetailsPageProps) {
                 <DialogActions sx={{ justifyContent: 'space-between', px: 3, py: 2 }}>
                     {/* Отображение общей цены */}
                     <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
-                        Итого: {totalPrice} ₽
+                        Итого: {totalPrice} р.
                     </Typography>
 
                     {/* Кнопки Отмена и Купить */}

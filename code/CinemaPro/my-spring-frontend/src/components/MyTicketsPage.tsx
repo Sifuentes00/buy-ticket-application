@@ -260,7 +260,7 @@ function MyTicketsPage({ currentUser }: MyTicketsPageProps) {
                                                 : 'Место неизвестно'}
                                         </TableCell>
                                         <TableCell align="center">
-                                            {ticket.price?.toFixed(2) || '0.00'} ₽
+                                            {ticket.price?.toFixed(2) || '0.00'} р.
                                         </TableCell>
                                         <TableCell align="center">
                                             <IconButton
